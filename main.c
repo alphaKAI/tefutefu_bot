@@ -65,22 +65,14 @@ int main(void)
   //α改の勝手に追加
   FILE *fp;
   char num[260];
-  char post_string[100];
+  char post_string[1000];
   char filename[]="data.txt";
-  //ファイルチェックの返り値
   int sum;
-  //ファイル読み込みとかの返り値
   int kum;
-  //ファイルチェックの時の返り値によって処理をキメる的な
   int dum;
-  //行数チェック
-  int zum;
-  //乱数の返り値
-  int var;
-  //ロガー呼び出しのとこ
   char logger[] = "./tefutefu_log";
-  //updateに渡すポインタ
-  char *str;
+  int sys;
+  char logstr[260];
   //ここまで
     
   char usr[20] = {0}, id[20] = {0}, token[150] = {0}, secret[150] = {0};
@@ -190,16 +182,17 @@ int main(void)
 	
 	//α改が書きましたｧ ==BOTの機関部==
 	//ろがーの実行
-	system(logger);
+	sys=system(logger);
 	//ファイルチェック
 	sum=check(filename);
 	if(sum==1){
+	//ファイルが存在する	
 	dum=1;
 	}
 	else{
 	dum=0;
-	printf("ファイルを読み込めませんでした\n");
-	system("./tefutefu_log 2 エラー:ファイルを読み込めませんでした");
+	printf("ファイルを読み込めまない または、ファイルが存在しませんでした\n");
+	//system("./tefutefu_log 2 エラー:ファイルを読み込めませんでした");
 	onkai();
 	return 0;
 	}
@@ -207,55 +200,66 @@ int main(void)
 	if(dum==1){
 	//ファイル読み込み
 	//ファイルのパス, 取得する行数, 返す変数(?)(自分で書き換えたけどよくわかってない), 読み込む最大文字数140字分
+	/*
 	zum = how_line(filename);
 	var = GetRandom(zum);
 	//kum = ReturnStrings(filename, var, post_string, 140);
 	ReturnStrings(filename, var, post_string, 1000);
-	
+	*/
+	kum = make_string(filename,post_string,1000);
 	//str = &post_string;
-
 	}
 	else{
-	printf("学習ファイル(現在は学習の昨日は未実装のため語句ふぁいるです)が見つかりませんでした\n");
+	printf("不明なエラーが発生しました(check関数)\n");
 	printf("終了します\n");
 	return 0;
 	}
+
 	if(kum==0){
-	printf("正常に学習ファイルを読み込みました\n");
+		printf("正常:\n");
+		printf("正常に学習ファイルを読み込み 文章生成に成功しました\n");
 	}
 	else if(kum==-1){
-	printf("ファイルオープンに失敗しました");
+		printf("ERROR:\n");
+		printf("学習ファイルのファイルオープンに失敗しました");
 	}
 	else if(kum==-2){
-	printf("データの取得に失敗しました");
+		printf("ERROR:\n");
+		printf("データの取得に失敗しました");
+	}
+	else if(kum==2){
+		printf("ERROR:\n");	
+		printf("make_string関数内でのcheck関数からの戻り値が異常です");
 	}
 	else{
-	printf("不明なエラーが発生しました\n");
-	}	
+		printf("不明なエラーが発生しました\n");
+		printf("make_stringからの返り値:%d\n", kum);
+	}
 	//ここまで
 	
 	
 	
-  printf("ツイートしています...");
+  printf("\nツイートしています...\n");
   /* if(errcode = Twitter_UpdateStatus(c, a, argv[1]), errcode < 0) */
   if(errcode = Twitter_UpdateStatus(c, a, post_string), errcode < 0) {
     printf("\nツイートでエラーが発生しています\n");
     if(errcode < -8){
-	system("./tefutefu_log 2 エラーが発生しました\n通信エラーが発生しました\n");
+	sys=system("./tefutefu_log 2 エラーが発生しました\n通信エラーが発生しました\n");
 	printf("エラーコード:%d（通信エラー）\n", errcode);
 	}
     else{
 	printf("エラーコード:%d（内部処理エラー）\n", errcode);
-	system("./tefutefu_log 2 エラーが発生しました\n内部エラーが発生しました\n");
+	sys=system("./tefutefu_log 2 エラーが発生しました\n内部エラーが発生しました\n");
 	}
     exit(0);
   }
   else{
-  system("./tefutefu_log 1 \n");
+  sprintf(logstr, "./tefutefu_log 1 %s", post_string);
+  sys=system(logstr);
   printf("OK.\nツイートに成功しました。\n");
   }
 
-	printf("post:%s\n", post_string);
+	printf("\n=============\npost:%s\n", post_string);
 	
   return 0;
 }
