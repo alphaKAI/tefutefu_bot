@@ -8,9 +8,7 @@
 このスクリプトはあわあわ氏(Twitter:@pn1y)氏にかいてもらったUserStream取得スクリプトを改造する形になっています  
 元のスクリプト→ https://gist.github.com/pnlybubbles/4523338  
   
-本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるとっころあります たとえばbot_enやbot_jaはもともと宣言していませんでしたが  
-公開用にtefutefu_botをbot_enにてふてふをbot_jaにおきかえました  
-つまり(sss.include?("@tefutefu_tyou"))→(sss.include?("@"+bot_en))  
+本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるとっころあります 
   
 Windows/Linux/Mac OSX/UNIX/BSDなどの幅広いプラットフォームでうごきます(Ruby製なので)  
 ですが、開発はWindowsで行なっているのでrebootコマンドやstopコマンドでは  
@@ -32,25 +30,27 @@ LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
 *UserStream取得
 *バトルドームおみくじ
 *ふぁぼ
-その他の機能は、オリジナルではまだ実装されずプラグインなので、ここには書きませんしファイルもアップロードしません ご了承下さい  
+*あとなんか  
+その他の機能は、オリジナルでは実装されずプラグインによる実装なので、ここには書きませんしファイルもアップロードしません ご了承下さい  
   
   
 VERSION
 -----------------
 2012/12/23 Ver0.0.2公開  
 2013/3/29 Ver0.4.4_8α_Rb公開 ここよりRubyに移行  
+2013/3/29 Ver0.4.5α_Rb公開 ファイルをわけて管理性の向上及び、可読性の向上  
   
   
 注意事項
 -----------------
-本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるとっころあります たとえばbot_enやbot_jaはもともと宣言していませんでしたが  
-公開用にtefutefu_botをbot_enにてふてふをbot_jaにおきかえました  
-つまり(sss.include?("@tefutefu_tyou"))→(sss.include?("@"+bot_en))  
+本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるとっころあります 
+  
   
 Windows/Linux/Mac OSX/UNIX/BSDなどの幅広いプラットフォームでうごきます(Ruby製なので)  
 ですが、開発はWindowsで行なっているのでrebootコマンドやstopコマンドでは  
 batファイルを呼んだりCMDのコマンドを実行したりしています(将来的にはLinuxで動かします)  
 お使いの環境にあったコマンドにしてください  
+あとTefutefuクラスのフォローバックはまだ未完成です    
   
   
 LICENCE
@@ -61,8 +61,8 @@ LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
   
 つかいかた
 -------------------
-変数に適当な値を入れてください  
-bot_(en|ja)そのたTokenとadminあたりをいじればいいです  
+setting.rb変数に適当な値を入れたり"α改"をかきかえたりしてください  
+Tokenとかadminあたりをいじればいいです  
 Twitter gemが必要なのでインストールして下さいね  
 あと、SSL証明書も必要なので、userstream.twitter.comから取得して下さい
   

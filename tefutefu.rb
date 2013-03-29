@@ -25,26 +25,8 @@ require 'openssl'
 require 'oauth'
 require 'cgi'
 require 'json'
-require 'Twitter'#α改追記
-require 'pp'#α改追記
-
-# コンシュマーキーとアクセストークン
-CONSUMER_KEY        = ""
-CONSUMER_SECRET     = ""
-ACCESS_TOKEN        = ""
-ACCESS_TOKEN_SECRET = ""
-
-#α改追記 Twitter gem用
-#gem twitter Authenticate
-Twitter.configure do |config|
-	config.consumer_key = CONSUMER_KEY
-	config.consumer_secret = CONSUMER_SECRET
-	config.oauth_token = ACCESS_TOKEN
-	config.oauth_token_secret = ACCESS_TOKEN_SECRET
-end
-#botのバージョン
-VERSION=""
-#ここまで
+require_relative 'setting.rb'#α改追記
+require_relative 'tefutefu_main.rb'#α改追記
 
 # SSL証明書のパス
 CERTIFICATE_PATH = './userstream.twitter.com.pem'
@@ -115,24 +97,15 @@ class Alphakai
 
     def run
 	
-		#bot名定義
-		bot_ja="日本語のbot名 表示名的な"
-		bot_en="TwitterのID"
-		#α改追記 起動post
-		on_str=bot_ja+"が起動されました"+" "+"Version:"+VERSION+" "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] }
-		Twitter.update(on_str)
-		
-		puts "===Getting followers list.."
-		id=bot_en
-		id_list=[]
-		Twitter.follower_ids(id).ids.each { |id| id_list << id; }
-		puts "Ok."
-		
-		#Admin定義 array
-		#e.g. admins=["alpha_kai_NET","alpha_kai_KISEI"]
-		admins=[""]
-		#ここまで
-
+		#Tefutefuクラスnew
+		tefu=Tefutefu.new
+		#OAuth
+		tefu.oauth
+		#フォロワー取得
+		id_list=tefu.get_follower
+		#起動ポスト
+		tefu.on_post
+	
         loop do
             puts "==== connecting..."			
             begin
@@ -144,122 +117,26 @@ class Alphakai
                         alpha_handler.bls = @blacklist
                         alpha_handler.output
                         puts "=> #{alpha_handler.filtered}" if $DEBUG_
-
-						#時刻関連
-						t = Time.now
 						
-						fsize=id_list.size
-
+					#ここにてふてふのしょりとか
+					#α改追記ここより
+						t = Time.now
+						if t.min%30==0 && t.sec==0 then#
+							str="自己紹介:てふてふ 作者:α改 Ruby製bot UserStreamに対応で素早い返信ができるよ！　よろしくね！\n挨拶リプライ、バトルドームおみくじそのた機能があるから気軽に喋りかけてね!"
+						end
+						#よるほ
 						if t.hour==0 && t.min==0
 							Twitter.update("よるほー！")
 						end
-						
-						#ここまで
-						#α改追記 リプライ
-						if ((bot_en!=j['user']['screen_name']) && (j['text'].include?("RT")==false) && (id_list.index(j['user']['id']))) then
-							
-							#定義
-							sss=j['text']
-							in_rp_id=j['id_str']
-							t_id=j['user']['screen_name']
-							post_yn=false
-							
-							#時刻
-								if (sss.include?("@"+bot_en)) && (sss.include?("時刻")||sss.include?("何時")) && (d_adn==1) then
-									reply_str=Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] }
-									post_yn=true
-							#挨拶系
-							#F/F内ならTLに無差別に挨拶
-								#おはよ
-								elsif (sss.include?("おはよ")) && (j['text'].include?("@")==false) then
-									reply_str="おはようございます！"
-									post_yn=true
-								#ただいま
-								elsif (sss.include?("ただいま")) && (j['text'].include?("@")==false) then
-									reply_str="おかえりなさいませ!"
-									post_yn=true
-								#疲れた
-								elsif (sss.include?("つかれた")) || (sss.include?("疲れた")) && (j['text'].include?("@")==false) then
-									reply_str="お疲れ様です！"
-									posy_yn=true
-								#離脱 めしる ほかる じゃあの りだつ
-								elsif ((sss.include?("離脱")) || (sss.include?("りだつ")) || (sss.include?("めしる")) || (sss.include?("飯る")) || (sss.include?("じゃあの")) || (sss.include?("ほかる")) || (sss.include?("行ってきます"))) && (j['text'].include?("@")==false) then
-									reply_str="いってらっしゃいませ！"
-									post_yn=true
-								#めしいま
-								elsif ((sss.include?("めしった")) || (sss.include?("飯った")) || (sss.include?("めしいま")) || (sss.include?("飯いま"))) && (j['text'].include?("@")==false) then
-									reply_str="飯えりなさいませ！"
-									post_yn=true 
-								#ほかいま
-								elsif ((sss.include?("ほかった")) || (sss.include?("しゃわった")) || (sss.include?("ほかいま")) || (sss.include?("風呂った"))) && (j['text'].include?("@")==false) then
-									reply_str="ほかえりなさいませ！"
-									post_yn=true
-								#おやすみりぷ
-								elsif ((sss.include?("ねるー")) || (sss.include?("おやす"))) && (j['text'].include?("@")==false) then
-									reply_str="おやすみなさい"
-									post_yn=true
-								#おるか？ｗ
-								elsif ((sss.include?("てふてふ"))) && ((sss.include?("おるか？"))) && (j['text'].include?("@")==false) then
-									reply_str="おるでｗ"
-									post_yn=true
-								#admin ver
-								elsif (j['text'].include?("@"+bot_en)) && ((j['text'].include?("ver")) || (j['text'].include?("バージョン")) || (j['text'].include?("ばーじょん"))) && (admins.index(j['user']['screen_name'])) then
-									reply_str=bot_ja+"のばーじょん:"+VERSION
-									post_yn=true
-								#admin F/F数　
-								elsif (j['text'].include?("@"+bot_en)) && ((j['text'].include?("f/f")) || (j['text'].include?("F/F"))) && (admins.index(j['user']['screen_name'])) then
-									tus=Twitter.user(bot_en)
-									new=tus.followers_count-fsize
-									ff_str="(起動時|前回)取得時:フォロワー数 "+fsize.to_s+"\n今回取得時:フォロー数 "+tus.friends_count.to_s+"\n"+"フォロワー数　"+tus.followers_count.to_s+"\n新規フォロワー "+new.to_s
-									Twitter.update("@"+t_id+" "+ff_str, :in_reply_to_status_id => in_rp_id)
-									fsize=tus.followers_count
-								#admin reboot やっつけのbat
-								elsif (j['text'].include?("@"+bot_en)) && ((j['text'].include?("reboot")) || (j['text'].include?("再起動"))) && (admins.index(j['user']['screen_name'])) then
-									Twitter.update("管理人("+j['user']['screen_name']+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] })
-									system("reboot.bat")
-								#admin やっつけのstop
-								elsif (j['text'].include?("@"+bot_en)) && ((j['text'].include?("stop")) || (j['text'].include?("停止"))) && (admins.index(j['user']['screen_name'])) then
-									Twitter.update("管理人("+j['user']['screen_name']+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] })
-									system("taskkill /im ruby.exe /f")
-								#admin say
-								elsif (j['text'].include?("@"+bot_en)) && (admins.index(j['user']['screen_name'])) && (j['text'].include?("say")) then
-									say_str=j['text'].split(":")
-									u_name_str="管理人の.@"+j['user']['screen_name']+"より"
-									Twitter.update(u_name_str+" : "+say_str[1])
-								#@alpha_kai_NET バトルドォムおみくじ：「バ」「ト」「ル」「ド」「ォ」「ム」を組み合わせバトルドォムになれば勝ち
-								elsif (j['text'].include?("@"+bot_en)) && (j['text'].include?("おみくじ")) && ((j['text'].include?("バトルドーム")) || (j['text'].include?("バトルドォム"))) then
-									array=["バ","ト","ル","ド","ォ","ム"]
-									tmp_str=array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)]
-									if tmp_str=="バトルドォム"
-										result="やったね！ バトルドォムになったよ！ おめでとー！"
-									else
-										result="(´・ω・｀)しょぼーん 残念！ バトルドォムにならなかったよ また遊んでね！"
-									end
-									reply_str="バトルドオムおみくじ 結果:【"+tmp_str + "】" + " " + result +" #バトルドォム"
-									post_yn=true
-								#さいごに
-								elsif (j['text'].include?("@"+bot_en)) && post_yn==false then
-									sstr=["んぇ","えへへ","( ✹‿✹ )開眼 だァーーーーーーーーーーー！！！！！！！！！（ﾄｩﾙﾛﾛﾃｯﾃﾚｰｗｗｗﾃﾚﾃｯﾃﾃｗｗｗﾃﾃｰｗｗｗ）ｗｗｗﾄｺｽﾞﾝﾄｺﾄｺｼﾞｮﾝｗｗｗｽﾞｽﾞﾝｗｗ（ﾃﾃﾛﾘﾄﾃｯﾃﾛﾃﾃｰｗ","(´へωへ`*)","(´へεへ`*)"]
-									ssstr=sstr[rand(sstr.size)]
-									Twitter.update("@"+t_id+" "+ssstr, :in_reply_to_status_id => in_rp_id)
-							#挨拶ここまで
-							end
-							
-							#投稿
-							if (post_yn == true) then
-								Twitter.update("@"+t_id+" "+reply_str+" (開発中に付き誤リプの可能性もあります　ご了承お願いします)", :in_reply_to_status_id => in_rp_id)
-							end
-							#よみこんだぽすとにbot_jaがふくまれてたらふぁぼるふぁぼ
-							if j['text'].include?(bot_ja) then
-								Twitter.favorite(j['id_str'])
-							end
-							j=[]#初期化しとく
-							sss=""
-							reply_str=""
-							in_rp_id=""
-							t_id=""
-							#ここまで
+						#ふぁぼ
+						if j['text'].include?("てふてふ") then
+							Twitter.favorite(j['id_str'])
 						end
+						
+						#reply
+						tefu.reply_post(j['text'], j['id_str'], j['user']['screen_name'], j['user']['id'],id_list)
+						
+					#ここまで
                     end
                 end
             rescue Exception => e
