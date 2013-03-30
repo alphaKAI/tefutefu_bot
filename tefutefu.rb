@@ -4,7 +4,7 @@
 # このスクリプトはあわあわ氏(Twitter:@pn1y)氏にかいてもらったUserStream取得スクリプトを改造する形になっています
 # 元のスクリプト→ https://gist.github.com/pnlybubbles/4523338
 #
-# 本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるとっころあります たとえばbot_enやbot_jaはもともと宣言していませんでしたが
+# 本スクリプトはてふてふオリジナル 公開用にかきかえたり 削ってるとっころあります たとえばbot_enやbot_jaはもともと宣言していませんでしたが
 # 公開用にtefutefu_botをbot_enにてふてふをbot_jaにおきかえました
 # つまり(sss.include?("@tefutefu_tyou"))→(sss.include?("@"+bot_en))
 #
@@ -19,13 +19,12 @@
 # この 作品 は クリエイティブ・コモンズ 表示 - 継承 3.0 非移植 ライセンスの下に提供されています。
 #===========================================================================
 
-require 'rubygems'
+require 'rubygems' 
 require 'net/https'
 require 'openssl'
 require 'oauth'
 require 'cgi'
 require 'json'
-require_relative 'setting.rb'#α改追記
 require_relative 'tefutefu_main.rb'#α改追記
 
 # SSL証明書のパス
@@ -84,11 +83,11 @@ end
 
 class Alphakai
     attr_reader :blacklist
-
+	
     def initialize
-        File.open("./blacklist.csv", "w").close() unless File.exist?("./blacklist.csv")
+        File.open("./blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./blacklist.csv")
 
-        File.open('./blacklist.csv', 'r') do |io|
+        File.open('./blacklist.csv', 'r', :encoding => Encoding::UTF_8) do |io|
             @blacklist = io.read.strip.split(',')
         end
 
@@ -121,8 +120,8 @@ class Alphakai
 					#ここにてふてふのしょりとか
 					#α改追記ここより
 						t = Time.now
-						if t.min%30==0 && t.sec==0 then#
-							str="自己紹介:てふてふ 作者:α改 Ruby製bot UserStreamに対応で素早い返信ができるよ！　よろしくね！\n挨拶リプライ、バトルドームおみくじそのた機能があるから気軽に喋りかけてね!"
+						if t.min%30==0 && t.sec==0 then
+							str="自己紹介:てふてふ 作者:α改 Ruby製bot UserStreamに対応で素早い返信ができるよ！ よろしくね！\n挨拶リプライ、バトルドームおみくじそのた機能があるから気軽に喋りかけてね!"
 						end
 						#よるほ
 						if t.hour==0 && t.min==0
@@ -134,7 +133,7 @@ class Alphakai
 						end
 						
 						#reply
-						tefu.reply_post(j['text'], j['id_str'], j['user']['screen_name'], j['user']['id'],id_list)
+						tefu.reply_post(j['text'], j['id_str'], j['user']['screen_name'], j['user']['id'],id_list,j['user']['name'])
 						
 					#ここまで
                     end

@@ -1,7 +1,7 @@
 ﻿# encoding: utf-8
 
 #バージョン
-VERSION="0.4.5α_Rb"
+VERSION="0.4.5_6α_Rb"
 # コンシュマーキーとアクセストークン
 CONSUMER_KEY        = ""
 CONSUMER_SECRET     = ""

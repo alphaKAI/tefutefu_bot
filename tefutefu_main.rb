@@ -62,13 +62,13 @@ class Tefutefu
 	end	
 	
 	#リプライ
-	def reply_post(sss,in_rp_id,t_id,u_id,id_list)
+	def reply_post(sss,in_rp_id,t_id,u_id,id_list,user_name)
 	
 		if (("tefutefu_tyou"!=t_id) && (sss.include?("RT")==false) && (id_list.index(u_id))) then
 	
 			#定義
 			post_yn=false
-	
+
 			#てふてふのメイン処理
 	
 			#時刻
@@ -146,17 +146,49 @@ class Tefutefu
 				end
 				reply_str="バトルドオムおみくじ 結果:【"+tmp_str + "】" + " " + result +" #バトルドォム"
 				post_yn=true
+			#ふぁぼれよ
+			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("ふぁぼれよ")) then
+				Twitter.favorite(in_rp_id)
+				reply_str="ふぁぼったよ！ (´へωへ`*)　→　"+"https://twitter.com/"+ t_id +"/status/"+in_rp_id
+				post_yn=true
+			#開眼コマンド
+			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("開眼")) then
+				reply_str="( ✹‿✹ )開眼 だァーーーーーーーーーーー！！！！！！！！！（ﾄｩﾙﾛﾛﾃｯﾃﾚｰｗｗｗﾃﾚﾃｯﾃﾃｗｗｗﾃﾃｰｗｗｗ）ｗｗｗﾄｺｽﾞﾝﾄｺﾄｺｼﾞｮﾝｗｗｗｽﾞｽﾞﾝｗｗ（ﾃﾃﾛﾘﾄﾃｯﾃﾛﾃﾃｰｗ"
+				post_yn=true
+			#感謝
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("ありー")) || (sss.include?("ありがと"))) then
+				reply_str="えへへっ　どういたしまして！"
+				post_yn=true
 			#さいごに
 			elsif (sss.include?("@tefutefu_tyou")) && post_yn==false then
-				sstr=["んぇ","えへへ","( ✹‿✹ )開眼 だァーーーーーーーーーーー！！！！！！！！！（ﾄｩﾙﾛﾛﾃｯﾃﾚｰｗｗｗﾃﾚﾃｯﾃﾃｗｗｗﾃﾃｰｗｗｗ）ｗｗｗﾄｺｽﾞﾝﾄｺﾄｺｼﾞｮﾝｗｗｗｽﾞｽﾞﾝｗｗ（ﾃﾃﾛﾘﾄﾃｯﾃﾛﾃﾃｰｗ","(´へωへ`*)","(´へεへ`*)"]
+				#require_relative 'word.rb'#語彙ファイルよびだし
+				#語彙
+				sstr=["んぇ",
+					"えへへ",
+					"( ✹‿✹ )開眼 だァーーーーーーーーーーー！！！！！！！！！（ﾄｩﾙﾛﾛﾃｯﾃﾚｰｗｗｗﾃﾚﾃｯﾃﾃｗｗｗﾃﾃｰｗｗｗ）ｗｗｗﾄｺｽﾞﾝﾄｺﾄｺｼﾞｮﾝｗｗｗｽﾞｽﾞﾝｗｗ（ﾃﾃﾛﾘﾄﾃｯﾃﾛﾃﾃｰｗ",
+					"(´へωへ`*)",
+					"(´へεへ`*)",
+					"ﾝｯﾌｗｗｗｗｗｗｗｗｗｗ",
+					"んー？　なんてー？",
+					"イタ電",
+					"あなたのカーネルになりたい"]
+	
+				#イタ電
+				itaden=["結婚しろ","ﾁｯｽｗｗｗｗｗｗｗｗｗｗ","あっオカン来たから切るわ","今あなたの後ろにいるの","なんでもねぇよｗｗｗｗｗｗｗｗｗｗｗｗｗ",
+						"間違えましたｗｗｗｗｗｗｗｗ","めしなう",user_name+"ですか"+user_name+"ですか"+user_name+"ですか",
+						"☎☎☎☎☎☎☎☎☎☎☎☎☎☎☎☎","やったｗｗｗｗｗｗｗｗｗｗイタ電成功ｗｗｗｗｗｗｗ"]
 				ssstr=sstr[rand(sstr.size)]
+				if ssstr=="イタ電" then
+					ssstr=""
+					ssstr="┗(^o^)┛イタ電するぞぉぉぉｗｗ( ^o^)☎┐もしもしｗｗｗｗｗｗ"+user_name+"ですかｗｗｗｗｗｗｗｗ"+itaden[rand(itaden.size)]+"( ^o^)Г☎ﾁﾝｯ"
+				end
 				Twitter.update("@"+t_id+" "+ssstr, :in_reply_to_status_id => in_rp_id)
 			#挨拶ここまで
 		end
 	
 		#投稿
 		if (post_yn == true) then
-			Twitter.update("@"+t_id+" "+reply_str+" (開発中に付き誤リプの可能性もあります　ご了承お願いします)", :in_reply_to_status_id => in_rp_id)
+			Twitter.update("@"+t_id+" "+reply_str, :in_reply_to_status_id => in_rp_id)
 		end
 		
 		sss=""
