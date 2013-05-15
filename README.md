@@ -8,21 +8,16 @@
 このスクリプトはあわあわ氏(Twitter:@pn1y)氏にかいてもらったUserStream取得スクリプトを改造する形になっています  
 元のスクリプト→ https://gist.github.com/pnlybubbles/4523338  
   
-本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるとっころあります 
+本スクリプトはてふてふオリジナル　公開用にかきかえたり 削ってるところがあります 
   
 Windows/Linux/Mac OSX/UNIX/BSDなどの幅広いプラットフォームでうごきます(Ruby製なので)  
-ですが、開発はWindowsで行なっているのでrebootコマンドやstopコマンドでは  
-batファイルを呼んだりCMDのコマンドを実行したりしています(将来的にはLinuxで動かします)  
-お使いの環境にあったコマンドにしてください  
+rebootとstopを強化したので環境依存がなくなりました　　
   
 Copyleft (C) α改 @alpha_kai_NET 2012-2013 http://alpha-kai-net.info/  
   
 LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja  
 この 作品 は クリエイティブ・コモンズ 表示 - 継承 3.0 非移植 ライセンスの下に提供されています。  
-  
-最後に、いっかいREADME.MDが事故により消えてしまいイライラしながら書きなおしたので少々適当なことになっています  
-今度書き直す予定ですのでご了承下さい  
-  
+    
   
 機能
 -----------------
@@ -31,6 +26,7 @@ LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
 *バトルドームおみくじ
 *ふぁぼ
 *あとなんか  
+*再起動 停止その辺に対応しました
 その他の機能は、オリジナルでは実装されずプラグインによる実装なので、ここには書きませんしファイルもアップロードしません ご了承下さい  
   
   
@@ -40,7 +36,8 @@ VERSION
 2013/3/29 Ver0.4.4_8α_Rb公開 ここよりRubyに移行  
 2013/3/29 Ver0.4.5α_Rb公開 ファイルをわけて管理性の向上及び、可読性の向上  
 2013/3/31 Ver0.4.5_6α_Rb公開 語彙を少し増やしたり厄介度を増したりとか
-  
+2013/5/15 Ver0.4.6α_Rb公開 毎回リビジョンごとにうｐしてないからだいぶ飛んだ気もするけど更新 stop rebootの強化  
+　　
   
 注意事項
 -----------------
@@ -48,9 +45,7 @@ VERSION
   
   
 Windows/Linux/Mac OSX/UNIX/BSDなどの幅広いプラットフォームでうごきます(Ruby製なので)  
-ですが、開発はWindowsで行なっているのでrebootコマンドやstopコマンドでは  
-batファイルを呼んだりCMDのコマンドを実行したりしています(将来的にはLinuxで動かします)  
-お使いの環境にあったコマンドにしてください  
+rebootとstopを強化したので環境依存がなくなりました　　
 あとTefutefuクラスのフォローバックはまだ未完成です    
   
   
@@ -62,9 +57,8 @@ LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
   
 つかいかた
 -------------------
-setting.rb変数に適当な値を入れたり"α改"をかきかえたりしてください  
-Tokenとかadminあたりをいじればいいです  
-Twitter gemが必要なのでインストールして下さいね  
+いろいろと必要なところを書き換えてください  
+リプライの検出フィルタ等 やsetting.rbの中身 それに前提gem(Twitter,OAuth)を用意して下さい  
 あと、SSL証明書も必要なので、userstream.twitter.comから取得して下さい
   
   
@@ -91,4 +85,4 @@ Github <https://github.com/alphaKAI>
 Mail to <alpha.kai.net@alpha-kai-net.info>
   
   
-COPYRIGHT (c) α改 @alpha_kai_NET http://alha-kai-net.info
+Copyleft (c) α改 @alpha_kai_NET http://alha-kai-net.info　　

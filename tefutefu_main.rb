@@ -1,6 +1,5 @@
 ﻿# encoding: utf-8
 require 'twitter'
-require 'pp'
 require_relative 'setting.rb'
 
 class Tefutefu
@@ -68,7 +67,7 @@ class Tefutefu
 	
 			#定義
 			post_yn=false
-
+			
 			#てふてふのメイン処理
 	
 			#時刻
@@ -105,8 +104,12 @@ class Tefutefu
 				reply_str="おやすみなさい"
 				post_yn=true
 			#おるか？ｗ
-			elsif ((sss.include?("てふてふ"))) && ((sss.include?("おるか？"))) && (sss.include?("@")==false) then
+			elsif (sss.include?("てふてふ")) && ((sss.include?("おる")) || (sss.include?("いる"))) && (sss.include?("@")==false) then
 				reply_str="おるでｗ"
+				post_yn=true
+			#@wild_world_end : @alpha_kai_NET ｶﾞｯの機能つけろよ
+			elsif ((sss.include?("ぬるぽ")) || (sss.include?("NullPointerException")) || (sss.include?("NullPointerAssignment"))) && (sss.include?("@")==false) then
+				reply_str="ｶﾞｯ"
 				post_yn=true
 			#admin ver
 			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("ver")) || (sss.include?("バージョン")) || (sss.include?("ばーじょん"))) && (ADMINS.index(t_id)) then
@@ -121,21 +124,22 @@ class Tefutefu
 				fsize=tus.followers_count
 			#admin reboot
 			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("reboot")) || (sss.include?("再起動"))) && (ADMINS.index(t_id)) then
-				Twitter.update("管理人("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] })
-				system("reboot.bat")
+				Twitter.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] })
+				return 1#再起動
+			#admin stop
 			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("stop")) || (sss.include?("停止"))) && (t_id=="alpha_kai_NET") then
-				Twitter.update("管理人("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] })
-				system("taskkill /im ruby.exe /f")
+				Twitter.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { '%s.%03d' % [strftime('%Y年%m月%d日%H時%M分%S秒'), (usec / 1000.0).round] })
+				return 2#停止
 			#say
 			elsif (sss.include?("@tefutefu_tyou")) && (ADMINS.index(t_id)) && (sss.include?("say")) then
 				say_str=sss.split(":")
 				if (t_id.include?("alpha_kai")) then
-					u_name_str="管理人のα改(.@"+t_id+")"+"より"
+					u_name_str="管理者のα改(.@"+t_id+")"+"より"
 				else
 					u_name_str="プラグイン開発者のだいこん(.@"+t_id+")"+"より  "
 				end
 				Twitter.update(u_name_str+" : "+say_str[1])
-			#@alpha_kai_NET バトルドォムおみくじ：「バ」「ト」「ル」「ド」「ォ」「ム」を組み合わせバトルドォムになれば勝ち
+			#@mz_:@alpha_kai_NET バトルドォムおみくじ：「バ」「ト」「ル」「ド」「ォ」「ム」を組み合わせバトルドォムになれば勝ち
 			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("おみくじ")) && ((sss.include?("バトルドーム")) || (sss.include?("バトルドォム"))) then
 				array=["バ","ト","ル","ド","ォ","ム"]
 				tmp_str=array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)]
@@ -156,11 +160,11 @@ class Tefutefu
 				reply_str="( ✹‿✹ )開眼 だァーーーーーーーーーーー！！！！！！！！！（ﾄｩﾙﾛﾛﾃｯﾃﾚｰｗｗｗﾃﾚﾃｯﾃﾃｗｗｗﾃﾃｰｗｗｗ）ｗｗｗﾄｺｽﾞﾝﾄｺﾄｺｼﾞｮﾝｗｗｗｽﾞｽﾞﾝｗｗ（ﾃﾃﾛﾘﾄﾃｯﾃﾛﾃﾃｰｗ"
 				post_yn=true
 			#感謝
-			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("ありー")) || (sss.include?("ありがと"))) then
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("ありー")) || (sss.include?("あり")) || (sss.include?("ありがと"))) then
 				reply_str="えへへっ　どういたしまして！"
 				post_yn=true
 			#さいごに
-			elsif (sss.include?("@tefutefu_tyou")) && post_yn==false then
+			elsif (sss.include?("@tefutefu_tyou")) && (post_yn==false) && (sss.delete("@tefutefu_tyou").include?("@")==false) then
 				#require_relative 'word.rb'#語彙ファイルよびだし
 				#語彙
 				sstr=["んぇ",
@@ -191,11 +195,16 @@ class Tefutefu
 			Twitter.update("@"+t_id+" "+reply_str, :in_reply_to_status_id => in_rp_id)
 		end
 		
+		#ふぁぼ
+		if sss.include?("てふてふ") then
+			Twitter.favorite(t_id)
+		end
+	
 		sss=""
 		reply_str=""
 		in_rp_id=""
 		t_id=""
 		#ここまで
-	end	
-end
+		end	
+	end
 end

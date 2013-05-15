@@ -4,14 +4,8 @@
 # このスクリプトはあわあわ氏(Twitter:@pn1y)氏にかいてもらったUserStream取得スクリプトを改造する形になっています
 # 元のスクリプト→ https://gist.github.com/pnlybubbles/4523338
 #
-# 本スクリプトはてふてふオリジナル 公開用にかきかえたり 削ってるとっころあります たとえばbot_enやbot_jaはもともと宣言していませんでしたが
-# 公開用にtefutefu_botをbot_enにてふてふをbot_jaにおきかえました
-# つまり(sss.include?("@tefutefu_tyou"))→(sss.include?("@"+bot_en))
-#
 # Windows/Linux/Mac OSX/UNIX/BSDなどの幅広いプラットフォームでうごきます(Ruby製なので)
-# ですが、開発はWindowsで行なっているのでrebootコマンドやstopコマンドでは
-# batファイルを呼んだりCMDのコマンドを実行したりしています(将来的にはLinuxで動かします)
-# お使いの環境にあったコマンドにしてください
+#　rebootとstopを強化したので環境依存がなくなりました
 #
 # Copyleft (C) α改 @alpha_kai_NET 2012-2013 http://alpha-kai-net.info/
 #
@@ -34,6 +28,9 @@ CERTIFICATE_PATH = './userstream.twitter.com.pem'
 USERSTREAM_API_URL = 'https://userstream.twitter.com/1.1/user.json?replies=all'
 
 $DEBUG_ = false
+
+#再起動関連 α改追記
+reboot_torf=false
 
 class Account
     def initialize
@@ -104,7 +101,8 @@ class Alphakai
 		id_list=tefu.get_follower
 		#起動ポスト
 		tefu.on_post
-	
+		tafuback=0#ループをするかの条件用変数
+		
         loop do
             puts "==== connecting..."			
             begin
@@ -119,21 +117,12 @@ class Alphakai
 						
 					#ここにてふてふのしょりとか
 					#α改追記ここより
-						t = Time.now
-						if t.min%30==0 && t.sec==0 then
-							str="自己紹介:てふてふ 作者:α改 Ruby製bot UserStreamに対応で素早い返信ができるよ！ よろしくね！\n挨拶リプライ、バトルドームおみくじそのた機能があるから気軽に喋りかけてね!"
-						end
-						#よるほ
-						if t.hour==0 && t.min==0
-							Twitter.update("よるほー！")
-						end
-						#ふぁぼ
-						if j['text'].include?("てふてふ") then
-							Twitter.favorite(j['id_str'])
-						end
 						
 						#reply
-						tefu.reply_post(j['text'], j['id_str'], j['user']['screen_name'], j['user']['id'],id_list,j['user']['name'])
+						tefuback=tefu.reply_post(j['text'], j['id_str'], j['user']['screen_name'], j['user']['id'],id_list,j['user']['name'])
+						
+						return true if tefuback == 1
+						return false if tefuback == 2
 						
 					#ここまで
                     end
@@ -171,7 +160,7 @@ class Alphakai
         def output
             File.open('./output.txt', 'a') do |io|
                 @filtered = filter(@text)
-                io.puts("#{@scrnm}:#{@filtered}") if @filtered != ""
+                io.puts("#{@filtered}") if @filtered != ""
             end
         end
 
@@ -182,4 +171,7 @@ class Alphakai
     end
 end
 
-Alphakai.new.run
+reboot_torf=Alphakai.new.run
+while reboot_torf==true
+	reboot_torf=Alphakai.new.run
+end
