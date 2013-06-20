@@ -26,7 +26,8 @@ LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
 *バトルドームおみくじ
 *ふぁぼ
 *あとなんか  
-*再起動 停止その辺に対応しました
+*再起動 停止その辺に対応しました  
+*脱Twitter gemしました！  
 その他の機能は、オリジナルでは実装されずプラグインによる実装なので、ここには書きませんしファイルもアップロードしません ご了承下さい  
   
   
@@ -37,6 +38,7 @@ VERSION
 2013/3/29 Ver0.4.5α_Rb公開 ファイルをわけて管理性の向上及び、可読性の向上  
 2013/3/31 Ver0.4.5_6α_Rb公開 語彙を少し増やしたり厄介度を増したりとか
 2013/5/15 Ver0.4.6α_Rb公開 stop rebootの強化  
+2013/6/20　Version:0.5.0α_Rb FIX01公開 脱Twitter gemした 　
 　　
   
 注意事項
@@ -58,7 +60,7 @@ LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
 つかいかた
 -------------------
 いろいろと必要なところを書き換えてください  
-リプライの検出フィルタ等 やsetting.rbの中身 それに前提gem(Twitter,OAuth)を用意して下さい  
+リプライの検出フィルタ等 やsetting.rbの中身 それに前提gem(OAuth)を用意して下さい  
 あと、SSL証明書も必要なので、userstream.twitter.comから取得して下さい
   
   
