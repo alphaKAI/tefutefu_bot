@@ -1,7 +1,7 @@
 ﻿#encoding: utf-8
 
 #バージョン
-VERSION="0.5.0α_Rb FIX01"
+VERSION="0.5.5α_Rb"
 # コンシュマーキーとアクセストークン
 CONSUMER_KEY        = ""
 CONSUMER_SECRET     = ""
@@ -11,4 +11,4 @@ TEFU_DEBUG=false
 #admins
 ADMINS=["alpha_kai_NET"]
 #commands
-COMMANDS=["reboot","stop","再起動","停止","開眼","ふぁぼれよ","バージョン","ver","おみくじ"]
+COMMANDS=["reboot","stop","再起動","停止","開眼","気分","天気","ふぁぼれよ","バージョン","ver"]

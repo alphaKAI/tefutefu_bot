@@ -1,21 +1,13 @@
 ﻿# encoding: utf-8
 
 #===========================================================================
-# このスクリプトはあわあわ氏(Twitter:@pn1y)氏にかいてもらったUserStream取得スクリプトを改造する形になっています
-# 元のスクリプト→ https://gist.github.com/pnlybubbles/4523338
-#
-# 新バージョンより、大規模な書き換え(自作ライブラリの導入)によりカナリコード削減化などを測りました
-#
-# Windows/Linux/Mac OSX/UNIX/BSDなどの幅広いプラットフォームでうごきます(Ruby製なので)
-# rebootとstopを強化したので環境依存がなくなりました
-#
+# This is one of the twitter's bot "tefutefu_tyou".
 # Copyleft (C) α改 @alpha_kai_NET 2012-2013 http://alpha-kai-net.info/
-#
-# LICENSE CC BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/deed.ja
-# この 作品 は クリエイティブ・コモンズ 表示 - 継承 3.0 非移植 ライセンスの下に提供されています。
+# Using alphaKAI/TwitRuby Library.
+# GPLv3 LICENSE
 #===========================================================================
 
-require_relative "requires.rb"
+require_relative "resource/requires.rb"
 
 # UserStreamAPIのurl
 USERSTREAM_API_URL = 'https://userstream.twitter.com/1.1/user.json?replies=all'
@@ -29,9 +21,9 @@ class Alphakai
 	attr_reader :blacklist
 	
 	def initialize
-		File.open("./blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./blacklist.csv")
+		File.open("./csv/blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./csv/blacklist.csv")
 
-		File.open('./blacklist.csv', 'r', :encoding => Encoding::UTF_8) do |io|
+		File.open('./csv/blacklist.csv', 'r', :encoding => Encoding::UTF_8) do |io|
 			@blacklist = io.read.strip.split(',')
 		end
 
@@ -118,7 +110,7 @@ class Alphakai
 		end
 
 		def output
-			File.open('./output.txt', 'a') do |io|
+			File.open('./output/output.txt', 'a') do |io|
 				@filtered = filter(@text)
 				io.puts("#{@filtered}") if @filtered != ""
 			end

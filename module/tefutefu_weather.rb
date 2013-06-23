@@ -1,6 +1,8 @@
-﻿require "net/http"
-require "uri"
-require "nokogiri"
+﻿######################################################
+# This is a tefutefu's extend module.
+# Copyleft (C) α改 @alpha_kai_NET 2012-2013 http://alpha-kai-net.info/
+# GPLv3 LICENSE
+######################################################
 
 module TefuFuncs
 
@@ -18,7 +20,7 @@ module TefuFuncs
 				when /週間/
 					weather_type=3
 			else
-				return "when?"
+				return 4
 			end
 			return weather_type
 		end
@@ -38,14 +40,20 @@ module TefuFuncs
 			place2=""
 			place_str2=""
 			
+			exist_check=false
+			
 			pref2num.each{|now,hash|
 				place_str=now if reply.include?(now)
 				place=hash if reply.include?(now)
+				exist_check=true if reply.include?(now)
 			}
 			pref_cap2num.each{|now,hash|
 				place_str2=now if reply.include?(now)
 				place2=hash if reply.include?(now)
 			}
+			if exist_check==false
+				return 5
+			end
 			
 			return "ERROR2" if place==nil
 			
@@ -92,26 +100,16 @@ module TefuFuncs
 					strs.each{|weth2|
 						break if weth2.empty?
 						tmp=weth2.split
-						# tmp[0]=tmp[0].split("(")[1].delete(")")
 						tmp.unshift(num2pref_cap[place2])
 						array_tmp << tmp
 					}
-					
+
 					array_tmp2=[]
-					strs.size.times{|i|
-						tmp=array_tmp[i]
-						array_tmp2 << num2pref_cap[place2].to_s+"の"+tmp[1].to_s+"の天気は"+tmp[2].to_s+"で 最高気温(℃)/最低気温(℃)は"+tmp[3].to_s+"です！"
-					}
-					arrays=[[array_tmp2[0],array_tmp2[1],array_tmp2[2],array_tmp2[3]],[array_tmp2[4],array_tmp2[5],array_tmp2[6],array_tmp2[7]]]
-					p arrays[0]
-					p arrays[1]
-					#Build Array
-					
+					array_tmp2 << strs.size << num2pref_cap[place2] << array_tmp
+					return_array = array_tmp2
 			end
-			#puts pref2num[place_str]
-			#puts num2pref[place]
 			return return_array
-		end#main
+		end#End of function
 		
 		def get_xml(parm)
 			url = URI.parse("http://tenki.jp/")
@@ -119,18 +117,10 @@ module TefuFuncs
 				http.get("/component/static_api/rss/forecast/#{parm}.xml")
 			}
 			xml_doc = Nokogiri.XML(res.body)#parse xml by Nokogiri
-		end
-	end
+		end#End of function
+	end#End of class
 	
 	class TefuOmikuji
 	
-	end
-end
-
-#FOR DEBUG
-include TefuFuncs
-te=TefuWeather.new
-str="福井の週間天気"
-a=te.parse_reply(str)
-tmp=te.get_weather(str,a)
-# puts tmp[0].to_s+"の"+tmp[1].to_s+"の天気は"+tmp[2].to_s+"で 最高気温(℃)/最低気温(℃)は"+tmp[3].to_s+"です！"
+	end#End of class
+end#End of module
