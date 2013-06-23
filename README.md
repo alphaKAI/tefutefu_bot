@@ -5,7 +5,7 @@
 概要
 ------------------
 This is one of the twitter's bot "tefutefu_tyou".  
-似非英語です、α改が開発してるRuby製botです。　　
+似非英語です、α改が開発してるRuby製botです。  
 Copyleft (C) α改 @alpha_kai_NET 2012-2013 http://alpha-kai-net.info/  
 Using alphaKAI/TwitRuby Library.  
 GPLv3 LICENSE  
@@ -13,10 +13,10 @@ GPLv3 LICENSE
   
 機能
 -----------------
-*挨拶機能
-*UserStream取得
-*バトルドームおみくじ
-*ふぁぼ
+*挨拶機能  
+*UserStream取得  
+*バトルドームおみくじ  
+*ふぁぼ  
 *天気機能  
 *再起動 停止  
 *さらにたくさん  
