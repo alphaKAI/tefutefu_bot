@@ -1,7 +1,7 @@
 ﻿# encoding: utf-8
-
+require_relative "../module/tefutefu_weather.rb"
 class Tefutefu
-
+include TefuFuncs
 	#OAuth関連
 	def oauth
 		cunsmer_array=[]
@@ -49,49 +49,49 @@ class Tefutefu
 			#てふてふのメイン処理
 	
 			#時刻
-			if /@tefutefu_tyou/ =~ sss && /時刻/ =~ sss ||/何時/ =~ sss && d_adn==1 then
+			if (sss.include?("@tefutefu_tyou")) && (sss.include?("時刻")||sss.include?("何時")) then
 				reply_str=Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }
 				post_torf=true
 			#挨拶系
 			#おはよ
-			elsif /おはよ/ =~ sss && (/@/ =~ sss) != nil then #F/F内ならTLに無差別に挨拶
+			elsif (sss.include?("おはよ")) && (sss.include?("@")==false) then #F/F内ならTLに無差別に挨拶
 				reply_str="おはようございます！"
 				post_torf=true
 			#ただいま
-			elsif /ただいま/ =~ sss && (/@/ =~ sss) != nil then
+			elsif (sss.include?("ただいま")) && (sss.include?("@")==false) then
 				reply_str="おかえりなさいませ!"
 				post_torf=true
 			#疲れた
-			elsif (/つかれた/ =~ sss || /疲れた/ =~ sss) && (/@/ =~ sss) != nil then
+			elsif (sss.include?("つかれた")) || (sss.include?("疲れた")) && (sss.include?("@")==false) then
 				reply_str="お疲れ様です！"
 				posy_yn=true
 			#離脱 めしる ほかる じゃあの りだつ
-			elsif (/離脱/ =~ sss || /りだつ/ =~ sss || /めしる/ =~ sss || /飯る/ =~ sss || /じゃあの/ =~ sss || /ほかる/ =~ sss || /行ってきます/ =~ sss ) && (/@/ =~ sss) != nil then
+			elsif ((sss.include?("離脱")) || (sss.include?("りだつ")) || (sss.include?("めしる")) || (sss.include?("飯る")) || (sss.include?("じゃあの")) || (sss.include?("ほかる")) || (sss.include?("行ってきます"))) && (sss.include?("@")==false) then
 				reply_str="いってらっしゃいませ！"
 				post_torf=true
 			#めしいま
-			elsif (/めしった/ =~ sss || /飯った/ =~ sss || /めしいま/ =~ sss || /飯いま/ =~ sss) && (/@/ =~ sss) != nil then
+			elsif ((sss.include?("めしった")) || (sss.include?("飯った")) || (sss.include?("めしいま")) || (sss.include?("飯いま"))) && (sss.include?("@")==false) then
 				reply_str="飯えりなさいませ！"
 				post_torf=true 
 			#ほかいま
-			elsif (/ほかった/ =~ sss || /しゃわった/ =~ sss || /ほかいま/ =~ sss || /風呂った/ =~ sss) && (/@/ =~ sss) != nil then
+			elsif ((sss.include?("ほかった")) || (sss.include?("しゃわった")) || (sss.include?("ほかいま")) || (sss.include?("風呂った"))) && (sss.include?("@")==false) then
 				reply_str="ほかえりなさいませ！"
 				post_torf=true
 			#おやすみりぷ
-			elsif (/ねるー/ =~ sss || /おやす/ =~ sss) && (/@/ =~ sss) != nil then
+			elsif ((sss.include?("ねるー")) || (sss.include?("おやす"))) && (sss.include?("@")==false) then
 				reply_str="おやすみなさい"
 				post_torf=true
 			#おるか？ｗ
-			elsif (/てふてふ/ =~ sss && /おる/ =~ sss || /いる/ =~ sss) && (/@/ =~ sss) != nil then
+			elsif (sss.include?("てふてふ")) && ((sss.include?("おる")) || (sss.include?("いる"))) && (sss.include?("@")==false) then
 				reply_str="おるでｗ"
 				post_torf=true
 			#@wild_world_end : @alpha_kai_NET ｶﾞｯの機能つけろよ
-			elsif (/ぬるぽ/ =~ sss || /NullPointerException/ =~ sss || /NullPointerAssignment/ =~ sss) && (/@/ =~ sss) != nil then
+			elsif ((sss.include?("ぬるぽ")) || (sss.include?("NullPointerException")) || (sss.include?("NullPointerAssignment"))) && (sss.include?("@")==false) then
 				reply_str="ｶﾞｯ"
 				post_torf=true
 			#Weather
 			elsif (/天気/ =~ sss) && (/@/ =~ sss) != nil then
-				include TefuFuncs
+				
 				tw=TefuWeather.new
 				str="福井の週間天気"
 				type=tw.parse_reply(sss)
@@ -120,29 +120,39 @@ class Tefutefu
 						}
 						arrays=[[tmp2.split("\n")[0],tmp2.split("\n")[1],tmp2.split("\n")[2],tmp2.split("\n")[3]],[tmp2.split("\n")[4],tmp2.split("\n")[5],tmp2.split("\n")[6]]]
 						@twi.update("@"+t_id+" "+"#{loc}の週間天気(3/1)\n"+arrays[0][0]+"\n"+arrays[0][1]+"\n", in_rp_id)
-						@twi.update("@"+t_id+" (2/3)\n"+arrays[0][2]+arrays[0][3]+"\n(続く)", in_rp_id)
-						@twi.update("@"+t_id+" (3/3)\n"+arrays[1][0]+arrays[1][1]+arrays[1][2], in_rp_id)
+						@twi.update("@"+t_id+" (2/3)\n"+arrays[0][2]+"\n"+arrays[0][3]+"\n(続く)", in_rp_id)
+						@twi.update("@"+t_id+" (3/3)\n"+arrays[1][0]+"\n"+arrays[1][1]+"\n"+arrays[1][2], in_rp_id)
 				end				
 			#admin ver
-			elsif (/@tefutefu_tyou/ =~ sss) && (/ver/ =~ sss || /バージョン/ =~ sss || /ばーじょん/ =~ sss) && (ADMINS.index(t_id)) then
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("ver")) || (sss.include?("バージョン")) || (sss.include?("ばーじょん"))) && (ADMINS.index(t_id)) then
 				reply_str="てふてふのばーじょん:"+VERSION
 				post_torf=true
+			#admin F/F数　
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("f/f")) || (sss.include?("F/F"))) && (ADMINS.index(t_id)) then
+				tus=Twitter.user("tefutefu_tyou")
+				new=tus.followers_count-fsize
+				ff_str="(起動時|前回)取得時:フォロワー数 "+fsize.to_s+"\n今回取得時:フォロー数 "+tus.friends_count.to_s+"\n"+"フォロワー数　"+tus.followers_count.to_s+"\n新規フォロワー "+new.to_s
+				Twitter.update("@"+t_id+" "+ff_str, :in_reply_to_status_id => in_rp_id)
+				fsize=tus.followers_count
 			#admin reboot
-			elsif (/@tefutefu_tyou/ =~ sss) && (/reboot/ =~ sss || /再起動/ =~ sss) && (ADMINS.index(t_id)) then
-				@twi.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) if TEFU_DEBUG==false
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("reboot")) || (sss.include?("再起動"))) && (ADMINS.index(t_id)) then
+				Twitter.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) if TEFU_DEBUG==false
 				return 1#再起動
 			#admin stop
-			elsif (/@tefutefu_tyou/ =~ sss) && (/stop/ =~ sss || /停止/ =~ sss) && (t_id=="alpha_kai_NET") then
-				@twi.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) if TEFU_DEBUG==false
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("stop")) || (sss.include?("停止"))) && (t_id=="alpha_kai_NET") then
+				Twitter.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) if TEFU_DEBUG==false
 				return 2#停止
-			#admin say
-			elsif (/@tefutefu_tyou/ =~ sss) && (ADMINS.index(t_id)) && (/say/ =~ sss) then
+			#say
+			elsif (sss.include?("@tefutefu_tyou")) && (ADMINS.index(t_id)) && (sss.include?("say")) then
 				say_str=sss.split(":")
-				u_name_str="管理者のα改(@"+t_id+")"+"より"
-				
-				@twi.update(u_name_str+" : "+say_str[1])
+				if (t_id.include?("alpha_kai")) then
+					u_name_str="管理者のα改(.@"+t_id+")"+"より"
+				else
+					u_name_str="プラグイン開発者のだいこん(.@"+t_id+")"+"より  "
+				end
+				Twitter.update(u_name_str+" : "+say_str[1])
 			#@mz_:@alpha_kai_NET バトルドォムおみくじ：「バ」「ト」「ル」「ド」「ォ」「ム」を組み合わせバトルドォムになれば勝ち
-			elsif (/@tefutefu_tyou/ =~ sss) && (/おみくじ/ =~ sss && /バトルドーム/ =~ sss || /バトルドォム/ =~ sss) then
+			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("おみくじ")) && ((sss.include?("バトルドーム")) || (sss.include?("バトルドォム"))) then
 				array=["バ","ト","ル","ド","ォ","ム"]
 				tmp_str=array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)] + array[rand(6)]
 				if tmp_str=="バトルドォム"
@@ -153,32 +163,32 @@ class Tefutefu
 				reply_str="バトルドオムおみくじ 結果:【"+tmp_str + "】" + " " + result +" #バトルドォム"
 				post_torf=true
 			#ふぁぼれよ
-			elsif (/@tefutefu_tyou/ =~ sss) && (/ふぁぼれよ/ =~ sss) then
-				@twi.favorite(in_rp_id)
+			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("ふぁぼれよ")) then
+				Twitter.favorite(in_rp_id)
 				reply_str="ふぁぼったよ！ (´へωへ`*)　→　"+"https://twitter.com/"+ t_id +"/status/"+in_rp_id
 				post_torf=true
 			#開眼コマンド
-			elsif (/@tefutefu_tyou/ =~ sss) && (/開眼/ =~ sss) then
+			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("開眼")) then
 				reply_str="( ✹‿✹ )開眼 だァーーーーーーーーーーー！！！！！！！！！（ﾄｩﾙﾛﾛﾃｯﾃﾚｰｗｗｗﾃﾚﾃｯﾃﾃｗｗｗﾃﾃｰｗｗｗ）ｗｗｗﾄｺｽﾞﾝﾄｺﾄｺｼﾞｮﾝｗｗｗｽﾞｽﾞﾝｗｗ（ﾃﾃﾛﾘﾄﾃｯﾃﾛﾃﾃｰｗ"
 				post_torf=true
 			#感謝
-			elsif (/@tefutefu_tyou/ =~ sss) && (/ありー/ =~ ss || /あり/ =~ sss || /ありがと/ =~ sss ) then
+			elsif (sss.include?("@tefutefu_tyou")) && ((sss.include?("ありー")) || (sss.include?("あり")) || (sss.include?("ありがと"))) then
 				reply_str="えへへっ　どういたしまして！"
 				post_torf=true
 			#今の気分は？
-			elsif (/@tefutefu_tyou/ =~ sss) && (/今の気分は/ =~ sss) then
+			elsif (sss.include?("@tefutefu_tyou")) && (sss.include?("今の気分は")) then
 				#語彙
 				kanjyou=[]
 				#読み込んで,区切りで読んで配列に突っ込む
-				kanjyou=File.read("./csv/kanjyou.csv", :encoding => Encoding::UTF_8).split(",")
+				kanjyou=File.read("./kanjyou.csv", :encoding => Encoding::UTF_8).split(",")
 				make_str=kanjyou[rand(kanjyou.size)]
-				@twi.update("@"+t_id+" "+make_str, in_rp_id)
+				Twitter.update("@"+t_id+" "+make_str, :in_reply_to_status_id => in_rp_id)
 			#さいごに
-			elsif (/@tefutefu_tyou/ =~ sss) && (post_torf==false) && (sss.delete("@tefutefu_tyou").include?("@")==false) then			
+			elsif (sss.include?("@tefutefu_tyou")) && (post_torf==false) && (sss.delete("@tefutefu_tyou").include?("@")==false) then			
 				#語彙
 				words=[]
 				#読み込んで,区切りで読んで配列に突っ込む
-				words=File.read("./csv/words.csv", :encoding => Encoding::UTF_8).split(",")
+				words=File.read("./words.csv", :encoding => Encoding::UTF_8).split(",")
 	
 				#イタ電
 				itaden=["結婚しろ","ﾁｯｽｗｗｗｗｗｗｗｗｗｗ","あっオカン来たから切るわ","今あなたの後ろにいるの","なんでもねぇよｗｗｗｗｗｗｗｗｗｗｗｗｗ",
@@ -189,7 +199,7 @@ class Tefutefu
 					make_str=""#初期化
 					make_str="┗(^o^)┛イタ電するぞぉぉぉｗｗ( ^o^)☎┐もしもしｗｗｗｗｗｗ"+user_name+"ですかｗｗｗｗｗｗｗｗ"+itaden[rand(itaden.size)]+"( ^o^)Г☎ﾁﾝｯ"
 				end
-				@twi.update("@"+t_id+" "+make_str, in_rp_id)
+				Twitter.update("@"+t_id+" "+make_str, :in_reply_to_status_id => in_rp_id)
 			#挨拶ここまで
 			end
 		end

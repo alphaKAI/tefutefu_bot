@@ -1,4 +1,8 @@
-﻿######################################################
+﻿#encoding:utf-8
+require "net/http"
+require "nokogiri"
+require "uri"
+######################################################
 # This is a tefutefu's extend module.
 # Copyleft (C) α改 @alpha_kai_NET 2012-2013 http://alpha-kai-net.info/
 # GPLv3 LICENSE

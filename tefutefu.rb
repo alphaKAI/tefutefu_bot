@@ -76,6 +76,7 @@ class Alphakai
 							return true if tefuback == 1
 							return false if tefuback == 2
 						end
+						
 						#ここまで
 					end			
 				end
