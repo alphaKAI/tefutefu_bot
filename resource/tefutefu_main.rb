@@ -1,5 +1,6 @@
 ﻿# encoding: utf-8
 require_relative "../module/tefutefu_weather.rb"
+require_relative "./tefutefu_parse.rb"
 class Tefutefu
 include TefuFuncs
 	#OAuth関連
@@ -42,11 +43,12 @@ include TefuFuncs
 	#リプライ
 	def reply_post(sss,in_rp_id,t_id,u_id,id_list,user_name)
 	
-		if (("tefutefu_tyou"!=t_id) && (sss.include?("RT")==false) && (id_list.index(u_id))) then
+		if (("tefutefu_tyou"!=t_id) && (sss.include?("RT")==false) && (id_list.index(u_id)))
 			#定義
 			post_torf=false
 					
-			str=TefuParser.parse(sss,id)
+			str=TefuParser.new.parse(sss,t_id)
+			
 			case str
 				when /weather/
 					tw=TefuWeather.new
@@ -80,15 +82,17 @@ include TefuFuncs
 							@twi.update("@"+t_id+" (3/3)\n"+arrays[1][0]+"\n"+arrays[1][1]+"\n"+arrays[1][2], in_rp_id)
 					end
 				when 1
-					@twi.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) if TEFU_DEBUG==false
+					@twi.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) unless TEFU_DEBUG
 					return 1
 				when 2
-					@twi.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) if TEFU_DEBUG==false
+					@twi.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) unless TEFU_DEBUG
 					return 2
 				when /fav/
 					@twi.favorite(in_rp_id)
 					reply_str="ふぁぼったよ！ (´へωへ`*)　→　"+"https://twitter.com/"+ t_id +"/status/"+in_rp_id
 					post_torf=true
+				when nil
+					return 0
 				else
 					reply_str=str
 					post_torf=true
@@ -101,7 +105,7 @@ include TefuFuncs
 		end
 		
 		#ふぁぼ
-		if sss.include?("てふてふ") then
+		if sss.include?("てふてふ") 
 			@twi.favorite(in_rp_id)
 		end
 		

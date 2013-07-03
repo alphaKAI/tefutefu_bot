@@ -5,12 +5,13 @@ class TefuParser
 			$stderr.puts("ERROR!")
 			return nil
 		end
+
 		catm=false
-		rst=true
+		rst=false
 		#check tweet status
 		if str.include?("@tefutefu_tyou")
-			  rst=true
-		else if str.include?("@")
+			rst=true
+		elsif str.include?("@")
 			catm=true
 		end
 		
@@ -41,7 +42,7 @@ class TefuParser
 				unless catm
 					return "おやすみなさい"
 				end
-			when /てふてふ/,/おる/,/いる/
+			when /(てふてふ).*(お|い)るか/
 				unless catm
 					return "おるでｗ"
 				end
@@ -49,7 +50,6 @@ class TefuParser
 				unless catm
 					return "ガッ"
 				end
-			#commands
 			when /ver/
 				if rst && ADMINS.index(id)
 					return "てふてふのばーじょん"+VERSION
@@ -69,7 +69,7 @@ class TefuParser
 			when /say/
 				if rst && ADMINS.index(id)
 					say_str=str.split(":")
-					return "管理者のα改(@"+t_id+")"+"より : "+say_str[1]
+					return "管理者のα改(@#{id})より : "+say_str[1]
 				end
 			when /(バトルドーム|バトルドォム).*(おみくじ)/
 				if rst
@@ -101,15 +101,15 @@ class TefuParser
 				#語彙
 				kanjyou=[]
 				#読み込んで,区切りで読んで配列に突っ込む
-				kanjyou=File.read("./kanjyou.csv", :encoding => Encoding::UTF_8).split(",")
+				kanjyou=File.read("#{$CDIR}/csv/kanjyou.csv", :encoding => Encoding::UTF_8).split(",")
 				return kanjyou[rand(kanjyou.size)]
-			#さいごに
+			#さいごに		
 			else
 				if rst
 					#語彙
 					words=[]
 					#読み込んで,区切りで読んで配列に突っ込む
-					words=File.read("./words.csv", :encoding => Encoding::UTF_8).split(",")
+					words=File.read("#{$CDIR}/csv/words.csv", :encoding => Encoding::UTF_8).split(",")
 	
 					#イタ電
 					itaden=["結婚しろ","ﾁｯｽｗｗｗｗｗｗｗｗｗｗ","あっオカン来たから切るわ","今あなたの後ろにいるの","なんでもねぇよｗｗｗｗｗｗｗｗｗｗｗｗｗ",
@@ -118,11 +118,10 @@ class TefuParser
 					make_str=words[rand(words.size)]
 					if make_str=="イタ電" then
 						make_str=""#初期化
-						make_str="┗(^o^)┛イタ電するぞぉぉぉｗｗ( ^o^)☎┐もしもしｗｗｗｗｗｗ"+user_name+"ですかｗｗｗｗｗｗｗｗ"+itaden[rand(itaden.size)]+"( ^o^)Г☎ﾁﾝｯ"
+						make_str="┗(^o^)┛イタ電するぞぉぉぉｗｗ( ^o^)☎┐もしもしｗｗｗｗｗｗ"+id.to_s+"ですかｗｗｗｗｗｗｗｗ"+itaden[rand(itaden.size)]+"( ^o^)Г☎ﾁﾝｯ"
 					end
 					return make_str
 				end
-			end
 		end
 	end
 end
