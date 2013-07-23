@@ -9,9 +9,9 @@ class TefuParser
 		catm=false
 		rst=false
 		#check tweet status
-		if str.include?("@tefutefu_tyou")
+		if /@tefutefu_tyou/ =~ sss
 			rst=true
-		elsif str.include?("@")
+		elsif /@/ =~ sss
 			catm=true
 		end
 		
@@ -38,7 +38,7 @@ class TefuParser
 				unless catm
 					return "いってらっしゃいませ！"
 				end
-			when /ねる/,/おやす/
+			when /寝る/,/おやす/
 				unless catm
 					return "おやすみなさい"
 				end
