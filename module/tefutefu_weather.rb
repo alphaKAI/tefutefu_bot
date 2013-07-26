@@ -1,4 +1,4 @@
-﻿#encoding:utf-8
+#encoding:utf-8
 require "net/http"
 require "nokogiri"
 require "uri"
@@ -47,13 +47,17 @@ module TefuFuncs
 			exist_check=false
 			
 			pref2num.each{|now,hash|
-				place_str=now if reply.include?(now)
-				place=hash if reply.include?(now)
-				exist_check=true if reply.include?(now)
+				if reply.include?(now)
+				  place_str=now
+				  place=hash
+				  exist_check=true
+				end
 			}
 			pref_cap2num.each{|now,hash|
-				place_str2=now if reply.include?(now)
-				place2=hash if reply.include?(now)
+			  if reply.include?(now)
+				place_str2=now
+				place2=hash
+			  end
 			}
 			if exist_check==false
 				return 5
@@ -98,7 +102,15 @@ module TefuFuncs
 						node2 << node.text if array > 1
 						array+=1
 					}
-					strs << node2[0].to_s + node2[1].to_s << node2[2].to_s + node2[3].to_s << node2[4].to_s + node2[5].to_s << node2[6].to_s + node2[7].to_s << node2[8].to_s + node2[9].to_s << node2[10].to_s + node2[11].to_s << node2[12].to_s + node2[13].to_s << node2[14].to_s + node2[15].to_s << node2[16].to_s + node2[17].to_s << node2[18].to_s + node2[19].to_s << node2[20].to_s + node2[21].to_s << node2[22].to_s + node2[23].to_s
+					
+					#23連シフトをeachシフトに書き換え
+					node_nm=0
+					node2.each{|data|
+					  strs << data.to_s
+					  node_nm+=1
+					  break if node_nm == 23
+					}
+					
 					array_tmp=[]
 					array=0
 					strs.each{|weth2|
@@ -125,6 +137,13 @@ module TefuFuncs
 	end#End of class
 	
 	class TefuOmikuji
-	
+	  def parse_reply(reply)
+		if reply.empty? || if reply =~ /おみくじ/
+		  return "ERROR"
+		end
+		if reply =~ /バトルドーム/
+		  return
+		end
+	  end
 	end#End of class
 end#End of module
