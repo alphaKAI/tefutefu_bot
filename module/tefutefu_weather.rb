@@ -138,7 +138,7 @@ module TefuFuncs
 	
 	class TefuOmikuji
 	  def parse_reply(reply)
-		if reply.empty? || if reply =~ /おみくじ/
+		if reply.empty? || reply =~ /おみくじ/
 		  return "ERROR"
 		end
 		if reply =~ /バトルドーム/
