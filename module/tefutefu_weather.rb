@@ -103,13 +103,7 @@ module TefuFuncs
 						array+=1
 					}
 					
-					#23連シフトをeachシフトに書き換え
-					node_nm=0
-					node2.each{|data|
-					  strs << data.to_s
-					  node_nm+=1
-					  break if node_nm == 23
-					}
+					strs << node2[0].to_s + node2[1].to_s << node2[2].to_s + node2[3].to_s << node2[4].to_s + node2[5].to_s << node2[6].to_s + node2[7].to_s << node2[8].to_s + node2[9].to_s << node2[10].to_s + node2[11].to_s << node2[12].to_s + node2[13].to_s << node2[14].to_s + node2[15].to_s << node2[16].to_s + node2[17].to_s << node2[18].to_s + node2[19].to_s << node2[20].to_s + node2[21].to_s << node2[22].to_s + node2[23].to_s
 					
 					array_tmp=[]
 					array=0
