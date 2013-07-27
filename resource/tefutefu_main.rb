@@ -43,10 +43,9 @@ include TefuFuncs
 	#リプライ
 	def reply_post(sss,in_rp_id,t_id,u_id,id_list,user_name)
 	
-		if (("tefutefu_tyou"!=t_id) && (sss.include?("RT")==false) && (id_list.index(u_id)))
+		unless "tefutefu_tyou"==t_id && sss.include?("RT") && !(id_list.index(u_id))
 			#定義
 			post_torf=false
-					
 			str=TefuParser.new.parse(sss,t_id)
 			
 			case str
@@ -105,7 +104,7 @@ include TefuFuncs
 		end
 		
 		#ふぁぼ
-		if sss.include?("てふてふ") 
+		if /てふてふ/ =~ sss
 			@twi.favorite(in_rp_id)
 		end
 		

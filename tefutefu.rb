@@ -21,7 +21,7 @@ reboot_torf=false
 
 class Alphakai
 	attr_reader :blacklist
-	
+	include TwitRuby
 	def initialize
 		File.open("#{$CDIR}/csv/blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./csv/blacklist.csv")
 
@@ -62,7 +62,9 @@ class Alphakai
 						puts "=> #{alpha_handler.filtered}" if $DEBUG_
 							
 						#reply
-						tefuback=tefu.reply_post(j["text"], j["id_str"], j["user"]["screen_name"], j["user"]["id"],id_list,j["user"]["name"])
+						if j["retweeted_status"].empty?#リツイートに反応しないようにした
+							tefuback=tefu.reply_post(j["text"], j["id_str"], j["user"]["screen_name"], j["user"]["id"],id_list,j["user"]["name"])
+						end
 						
 						case tefuback
 							when 1

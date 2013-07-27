@@ -9,9 +9,9 @@ class TefuParser
 		catm=false
 		rst=false
 		#check tweet status
-		if /@tefutefu_tyou/ =~ sss
+		if /@tefutefu_tyou/ =~ str
 			rst=true
-		elsif /@/ =~ sss
+		elsif /@/ =~ str
 			catm=true
 		end
 		
@@ -54,9 +54,11 @@ class TefuParser
 				if rst && ADMINS.index(id)
 					return "てふてふのばーじょん"+VERSION
 				end
-			when /天気/
+			when /天気/,/てんき/
 				unless catm
-					return "weather"
+					if rst
+						return "weather"
+					end
 				end
 			when /reboot/
 				if rst && ADMINS.index(id)
