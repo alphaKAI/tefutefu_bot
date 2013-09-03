@@ -36,6 +36,7 @@ VERSION
 2013/7/26   Version:0.5.8α_Rb FIX03 stable 公開 23連続のシフト連発してたのをeachでスマートにした  
 2013/7/26   Version:0.5.8α_Rb FIX04 stable 公開 HashをXMLから読み込んで生成させるようにしたのとFIX03をなかったことにした  
 2013/9/02   Version:0.5.8α_Rb FIX05 stable 公開 リプライパーサーの天気の条件式を修正し、無差別リプライを停止  
+2013/9/03   Version:0.5.8α_Rb FIX06        公開 動くようにした module行を消した  
   
 　 
 ChangeLog
@@ -44,6 +45,9 @@ Version:0.5.8α_Rb FIX05 stable
 * リプライパーサーの天気の条件式を修正し、無差別リプライを停止  
 * リツイートに反応しないようにした  
 * READMEにChangeLogをつけるようにした  
+  
+Version:0.5.8α_Rb FIX06  
+* module行を消した おそらく名前空間がアレになって起動しなかったので非module化により解決
   
   
 注意事項
