@@ -1,13 +1,13 @@
 ﻿#encoding: utf-8
 
 #バージョン
-VERSION="0.5.8α_Rb FIX06"
+VERSION="0.6.0α_Rb"
 # コンシュマーキーとアクセストークン
 CONSUMER_KEY        = ""
 CONSUMER_SECRET     = ""
 ACCESS_TOKEN        = ""
 ACCESS_TOKEN_SECRET = ""
-TEFU_DEBUG=false
+TEFU_DEBUG=true
 #admins
 ADMINS=["alpha_kai_NET"]
 #commands

@@ -61,7 +61,7 @@ class Alphakai
 						puts "=> #{alpha_handler.filtered}" if $DEBUG_
 							
 						#reply
-						if j["retweeted_status"].empty?#リツイートに反応しないようにした
+						if j["retweeted_status"].to_s.empty?#リツイートに反応しないようにした
 							tefuback=tefu.reply_post(j["text"], j["id_str"], j["user"]["screen_name"], j["user"]["id"],id_list,j["user"]["name"])
 						end
 						

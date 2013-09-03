@@ -37,6 +37,7 @@ VERSION
 2013/7/26   Version:0.5.8α_Rb FIX04 stable 公開 HashをXMLから読み込んで生成させるようにしたのとFIX03をなかったことにした  
 2013/9/02   Version:0.5.8α_Rb FIX05 stable 公開 リプライパーサーの天気の条件式を修正し、無差別リプライを停止  
 2013/9/03   Version:0.5.8α_Rb FIX06        公開 動くようにした module行を消した  
+2013/9/03   Version:0.6.0α_Rb              公開 Version0.6.x突入 凍結回避用にちょっと考えてみた  
   
 　 
 ChangeLog
@@ -48,6 +49,9 @@ Version:0.5.8α_Rb FIX05 stable
   
 Version:0.5.8α_Rb FIX06  
 * module行を消した おそらく名前空間がアレになって起動しなかったので非module化により解決
+  
+Version:0.6.0α_Rb  
+* 凍結回避用にちょっと考えてみた  
   
   
 注意事項
