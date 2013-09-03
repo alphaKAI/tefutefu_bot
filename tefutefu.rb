@@ -21,7 +21,6 @@ reboot_torf=false
 
 class Alphakai
 	attr_reader :blacklist
-	include TwitRuby
 	def initialize
 		File.open("#{$CDIR}/csv/blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./csv/blacklist.csv")
 
