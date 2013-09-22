@@ -16,10 +16,9 @@ $DEBUG_ = false
 
 $CDIR=Dir::pwd
 
-#再起動関連 α改追記
 reboot_torf=false
 
-class Alphakai
+class MainLoop
 	attr_reader :blacklist
 	def initialize
 		File.open("#{$CDIR}/csv/blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./csv/blacklist.csv")
@@ -35,17 +34,17 @@ class Alphakai
 	end
 
 	def run
-		tefu=Tefutefu.new
-		tefu.oauth
-		id_list=tefu.get_follower#get list
-		tefu.on_post
-		tafuback=0
+		bot=TwitterBot.new
+		bot.oauth
+		id_list=bot.get_follower#get list
+		bot.on_post
+		bot_back=0
 		
 		#起動から30秒後にツイート
 		Thread.new{
 			sleep 30
 			#ツイート
-			tefu.build_post
+			bot.build_post
 		}
 		
 		loop do
@@ -54,7 +53,7 @@ class Alphakai
 				@TwitRuby.user_stream do |j|
 					#follow　back?
 					if j["event"] == "follow"
-						tefu.follow_back(j["source"]["screen_name"],j["source"]["name"])
+						bot.follow_back(j["source"]["screen_name"],j["source"]["name"])
 						id_list << j["user"]["screen_name"].to_s#絡むfollower追加
 					end
 					
@@ -69,10 +68,10 @@ class Alphakai
 							
 						#reply
 						if j["retweeted_status"].to_s.empty?#リツイートに反応しないようにした
-							tefuback=tefu.reply_post(j["text"], j["id_str"], j["user"]["screen_name"], j["user"]["id"],id_list,j["user"]["name"])
+							bot_back=bot.reply_post(j["text"], j["id_str"], j["user"]["screen_name"], j["user"]["id"],id_list,j["user"]["name"])
 						end
 						
-						case tefuback
+						case bot_back
 							when 1
 								return true
 							when 2
@@ -126,7 +125,7 @@ class Alphakai
 	end
 end
 
-reboot_torf=Alphakai.new.run
+reboot_torf=MainLoop.new.run
 while reboot_torf==true
-	reboot_torf=Alphakai.new.run
+	reboot_torf=MainLoop.new.run
 end

@@ -1,14 +1,14 @@
 ﻿# encoding: utf-8
-require_relative "../module/tefutefu_weather.rb"
-require_relative "./tefutefu_parse.rb"
+require_relative "../module/bot_weather/bot_weather.rb"
+require_relative "./bot_parse.rb"
 
 require_relative "../module/build_tweet/ruby_mecab.rb"
 BEGIN_DELIMITER      = "__BEGIN__" + "\n"
 END_DELIMITER         = "__END__" + "\n"
 IGO_DIC_DIRECTORY = "./module/build_tweet/ipadic"
 
-class Tefutefu
-include TefuFuncs
+class TwitterBot
+include BotFuncs
 	def initialize
 		@loop_ = 0
 		@tools = BuildTools.new
@@ -24,7 +24,7 @@ include TefuFuncs
 	#フォロワ取得
 	def get_follower
 		puts "===Getting followers list.."
-		id="tefutefu_tyou"
+		id=BOTNAME_ID_NOAT
 		id_list=[]
 		@twi.follower_ids("alpha_kai_NET")["ids"].each {|id|
 			id_list << id
@@ -35,13 +35,13 @@ include TefuFuncs
 	
 	#てふてふ起動post
 	def on_post
-		on_str="てふてふが起動されました"+" "+"Version:"+VERSION+" "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }
-		@twi.update(on_str) if TEFU_DEBUG==false
+		on_str="#{BOTNAME_HN}が起動されました"+" "+"Version:"+VERSION+" "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }
+		@twi.update(on_str) if BOT_DEBUG==false
 	end
 	
 	#ふぉろば
 	def follow_back(target,tname)
-		me="tefutefu_tyou"
+		me=BOTNAME_ID_NOAT
 		
 		if(@twi.friendships?("",target,"",me)["relationship"]["source"]["followed_by"]==true) then#フォローされ確認
 			@twi.follow(target)
@@ -53,9 +53,9 @@ include TefuFuncs
 	end	
 	
 	def build_post
-		if File.exist("output/output.txt")
+		if File.exist?("output/output.txt")
 			@tools.study(File.read("output/output.txt", :encoding => Encoding::UTF_8).split("\n"))
-			@twi.update(tools.build_tweet)
+			@twi.update(@tools.build_tweet)
 		end
 	end
 	#リプライ
@@ -72,14 +72,14 @@ include TefuFuncs
 			return nil
 		end
 		
-		unless "tefutefu_tyou"==t_id && sss.include?("RT") && !(id_list.index(u_id))
+		unless BOTNAME_ID_NOAT==t_id && sss.include?("RT") && !(id_list.index(u_id))
 			#定義
 			post_torf=false
-			str=TefuParser.new.parse(sss,t_id)
+			str=BotParser.new.parse(sss,t_id)
 			
 			case str
 				when /weather/
-					tw=TefuWeather.new
+					tw=BotWeather.new
 					type=tw.parse_reply(sss)
 					if type==4
 						type=1#オプションのない場合は今日に
@@ -110,15 +110,17 @@ include TefuFuncs
 							@twi.update("@"+t_id+" (3/3)\n"+arrays[1][0]+"\n"+arrays[1][1]+"\n"+arrays[1][2], in_rp_id)
 					end
 				when 1
-					@twi.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) unless TEFU_DEBUG
+					@twi.update("管理者("+t_id+")よりrebootコマンドが実行されたため 再起動します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) unless BOT_DEBUG
 					return 1
 				when 2
-					@twi.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) unless TEFU_DEBUG
+					@twi.update("管理者("+t_id+")よりstopコマンドが実行されたため 停止します "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }) unless BOT_DEBUG
 					return 2
 				when /fav/
 					@twi.favorite(in_rp_id)
 					reply_str="ふぁぼったよ！ (´へωへ`*)　→　"+"https://twitter.com/"+ t_id +"/status/"+in_rp_id
 					post_torf=true
+				when /post/
+					build_post
 				when nil
 					return 0
 				else
@@ -133,7 +135,7 @@ include TefuFuncs
 		end
 		
 		#ふぁぼ
-		if /てふてふ/ =~ sss
+		if /#{BOTNAME_HN}/ =~ sss
 			@twi.favorite(in_rp_id)
 		end
 		
@@ -142,6 +144,5 @@ include TefuFuncs
 		in_rp_id=""
 		t_id=""
 		@loop_+=1
-		#ここまで
 	end
 end

@@ -1,5 +1,5 @@
 #encoding:utf-8
-class TefuParser
+class BotParser
 	def parse(str,id)
 		if str.empty? || id.empty?
 			$stderr.puts("ERROR!")
@@ -9,7 +9,7 @@ class TefuParser
 		catm=false
 		rst=false
 		#check tweet status
-		if /@tefutefu_tyou/ =~ str
+		if /#{BOTNAME_ID}/ =~ str
 			rst=true
 		elsif /@/ =~ str
 			catm=true
@@ -24,11 +24,11 @@ class TefuParser
 				end
 			when /おはよ/
 				unless catm
-					return "おはようございます！"
+					return "おはようございます！ #{id}さん"
 				end
 			when /ただいま/,/めしった/,/飯った/,/めしいま/,/ほかった/,/ほかいま/
 				unless catm
-					return "おかえりなさいませ！"
+					return "おかえりなさいませ！ #{id}さん"
 				end
 			when /つかれた/,/疲れた/
 				unless catm
@@ -40,9 +40,9 @@ class TefuParser
 				end
 			when /寝る/,/おやす/
 				unless catm
-					return "おやすみなさい"
+					return "おやすみなさい　#{id}さん"
 				end
-			when /(てふてふ).*(お|い)るか/
+			when /(#{BOTNAME_HN}).*(お|い)るか/
 				unless catm
 					return "おるでｗ"
 				end
@@ -53,6 +53,10 @@ class TefuParser
 			when /ver/
 				if rst && ADMINS.index(id)
 					return "てふてふのばーじょん"+VERSION
+				end
+			when /post/
+				if rst && ADMINS.index(id)
+					return "post"
 				end
 			when /天気/,/てんき/
 				unless catm

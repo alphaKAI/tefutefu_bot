@@ -8,9 +8,9 @@ require "uri"
 # GPLv3 LICENSE
 ######################################################
 
-module TefuFuncs
+module BotFuncs
 
-	class TefuWeather
+	class BotWeather
 		def parse_reply(reply)
 			unless /天気/ =~ reply
 				return "ERROR"#reject parse if not exist "天気" in reply
@@ -39,7 +39,7 @@ module TefuFuncs
 			pref_cap2num=Hash.new
 			num2pref_cap=Hash.new
 
-			doc = Nokogiri::HTML(open("./module/pref.xml"))
+			doc = Nokogiri::HTML(open("./module/bot_Weather/pref.xml"))
 			#pref2num
 			doc.xpath("//pref2num/prefs").each{|node|
 			  name=node.xpath("name").text
@@ -156,7 +156,7 @@ module TefuFuncs
 		end#End of function
 	end#End of class
 	
-	class TefuOmikuji
+	class BotOmikuji
 	  def parse_reply(reply)
 		if reply.empty? || reply =~ /おみくじ/
 		  return "ERROR"

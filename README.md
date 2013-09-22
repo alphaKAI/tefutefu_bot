@@ -40,6 +40,7 @@ VERSION
 2013/9/03   Version:0.5.8α_Rb FIX06        公開 動くようにした module行を消した  
 2013/9/03   Version:0.6.0α_Rb              公開 Version0.6.x突入 凍結回避用にちょっと考えてみた  
 2013/9/22   Version:0.7.0α_Rb              公開 Version0.7.0 メジャーアップデート 今更ながら自動ポスト(学習型)搭載した  
+2013/9/22   Version:0.7.1α_Rb              公開 汎用bot化 てふてふ(Tefuやtefutefu)などをbotや定数に起きかえ汎用性のあるbotに改造  
   
 　 
 ChangeLog
@@ -61,6 +62,10 @@ Version:0.7.0α_Rb
 http://d.hatena.ne.jp/tondol/20120311/1331470586  
 https://gist.github.com/tondol/2369385#file_twitterbot.rb  
   
+Version:0.7.1α_Rb  
+* 汎用bot化  
+これにより、てふてふに対する依存がなくなったためだれでも使えるかと思われる  
+  
   
 注意事項
 -----------------
@@ -76,10 +81,11 @@ GPLv3 LICENSE
   
 つかいかた
 -------------------
-いろいろと必要なところを書き換えてください(setting.rbの中身とか)  
+Botの設定をしてください(setting.rb)  
 前提gemを用意して下さい  
 それから、今回からigo-rubyを使用するので辞書ファイルとigo<バージョン>.jarが必要となります  
 /module/build_tweetにhttp://igo.sourceforge.jp/を参考に、辞書とigo本体を置いて下さい  
+もしかしたら、igo系のためにInstallerを作るかもしれません  
   
 
 前提gems
@@ -103,6 +109,7 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-linux]
 てふてふのアカウント
 --------------------
 @tefutefu_tyou<http://twitter.com/tefutefu_tyou>  
+>凍結なう(2013/9/22 12:09現在)<　　
   
   
 作者 WEB SITE
