@@ -1,8 +1,18 @@
 ﻿# encoding: utf-8
 require_relative "../module/tefutefu_weather.rb"
 require_relative "./tefutefu_parse.rb"
+
+require_relative "../module/build_tweet/ruby_mecab.rb"
+BEGIN_DELIMITER      = "__BEGIN__" + "\n"
+END_DELIMITER         = "__END__" + "\n"
+IGO_DIC_DIRECTORY = "./module/build_tweet/ipadic"
+
 class Tefutefu
 include TefuFuncs
+	def initialize
+		@loop_ = 0
+		@tools = BuildTools.new
+	end
 	#OAuth関連
 	def oauth
 		cunsmer_array=[]
@@ -16,7 +26,9 @@ include TefuFuncs
 		puts "===Getting followers list.."
 		id="tefutefu_tyou"
 		id_list=[]
-		@twi.follower_ids("alpha_kai_NET")["ids"].each { |id| id_list << id; }
+		@twi.follower_ids("alpha_kai_NET")["ids"].each {|id|
+			id_list << id
+		}
 		puts "OK."
 		return id_list
 	end
@@ -40,9 +52,26 @@ include TefuFuncs
 		end
 	end	
 	
+	def build_post
+		if File.exist("output/output.txt")
+			@tools.study(File.read("output/output.txt", :encoding => Encoding::UTF_8).split("\n"))
+			@twi.update(tools.build_tweet)
+		end
+	end
 	#リプライ
 	def reply_post(sss,in_rp_id,t_id,u_id,id_list,user_name)
 	
+		#投稿 800読み込みにつき一回ポスト
+		if @loop_ == 800
+			build_post
+			return nil
+		end
+	
+		#回数削減
+		if (1..4).include?(rand(10)+1)
+			return nil
+		end
+		
 		unless "tefutefu_tyou"==t_id && sss.include?("RT") && !(id_list.index(u_id))
 			#定義
 			post_torf=false
@@ -112,6 +141,7 @@ include TefuFuncs
 		reply_str=""
 		in_rp_id=""
 		t_id=""
+		@loop_+=1
 		#ここまで
 	end
 end

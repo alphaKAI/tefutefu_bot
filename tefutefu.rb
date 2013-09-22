@@ -41,6 +41,13 @@ class Alphakai
 		tefu.on_post
 		tafuback=0
 		
+		#起動から30秒後にツイート
+		Thread.new{
+			sleep 30
+			#ツイート
+			tefu.build_post
+		}
+		
 		loop do
 			puts "==== connecting..."			
 			begin

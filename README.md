@@ -20,6 +20,7 @@ GPLv3 LICENSE
 *天気機能  
 *再起動 停止  
 *さらにたくさん  
+*学習型の自動ポスト  
   
   
 VERSION
@@ -38,6 +39,7 @@ VERSION
 2013/9/02   Version:0.5.8α_Rb FIX05 stable 公開 リプライパーサーの天気の条件式を修正し、無差別リプライを停止  
 2013/9/03   Version:0.5.8α_Rb FIX06        公開 動くようにした module行を消した  
 2013/9/03   Version:0.6.0α_Rb              公開 Version0.6.x突入 凍結回避用にちょっと考えてみた  
+2013/9/22   Version:0.7.0α_Rb              公開 Version0.7.0 メジャーアップデート 今更ながら自動ポスト(学習型)搭載した  
   
 　 
 ChangeLog
@@ -52,6 +54,12 @@ Version:0.5.8α_Rb FIX06
   
 Version:0.6.0α_Rb  
 * 凍結回避用にちょっと考えてみた  
+  
+Version:0.7.0α_Rb  
+* 流石に2回目の凍結は笑えないから自動ポスト機能を実装  
+実装にあたりtondol氏のはてなダイヤリー及びソースコードを使わせてもらいました  
+http://d.hatena.ne.jp/tondol/20120311/1331470586  
+https://gist.github.com/tondol/2369385#file_twitterbot.rb  
   
   
 注意事項
@@ -70,12 +78,15 @@ GPLv3 LICENSE
 -------------------
 いろいろと必要なところを書き換えてください(setting.rbの中身とか)  
 前提gemを用意して下さい  
+それから、今回からigo-rubyを使用するので辞書ファイルとigo<バージョン>.jarが必要となります  
+/module/build_tweetにhttp://igo.sourceforge.jp/を参考に、辞書とigo本体を置いて下さい  
   
 
 前提gems
 --------------------
 *OAuth  
 *Nokogiri  
+*igo-ruby  
 多分こんな感じ  
   
 
