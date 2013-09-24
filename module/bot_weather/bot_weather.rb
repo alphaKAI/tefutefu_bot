@@ -39,29 +39,29 @@ module BotFuncs
 			pref_cap2num=Hash.new
 			num2pref_cap=Hash.new
 
-			doc = Nokogiri::HTML(open("./module/bot_Weather/pref.xml"))
+			doc = Nokogiri::HTML(open("./module/bot_weather/pref.xml"))
 			#pref2num
 			doc.xpath("//pref2num/prefs").each{|node|
-			  name=node.xpath("name").text
-			  num=node.xpath("num").text
-			  pref2num.store(name,num)#Add key and value
+				name=node.xpath("name").text
+				num=node.xpath("num").text
+				pref2num.store(name,num)#Add key and value
 			}
 			#num2pref
 			doc.xpath("//num2pref/prefs").each{|node|
- 			  name=node.xpath("name").text
-			  num=node.xpath("num").text
-			  num2pref.store(num,name)
+				name=node.xpath("name").text
+				num=node.xpath("num").text
+				num2pref.store(num,name)
 			}
 			#pref_cap2num
 			doc.xpath("//pref_cap2num/prefs").each{|node|
-			  name=node.xpath("name").text
-			  num=node.xpath("num").text
-			  pref_cap2num.store(name,num)
+				name=node.xpath("name").text
+				num=node.xpath("num").text
+				pref_cap2num.store(name,num)
 			}
 			doc.xpath("//num2pref_cap/prefs").each{|node|
-   			  name=node.xpath("name").text
-			  num=node.xpath("num").text
-			  num2pref_cap.store(num,name)
+				name=node.xpath("name").text
+				num=node.xpath("num").text
+				num2pref_cap.store(num,name)
 			}
 
 			return_array=[]
@@ -73,24 +73,24 @@ module BotFuncs
 			exist_check=false
 			
 			pref2num.each{|now,hash|
-				if reply.include?(now)
-				  place_str=now
-				  place=hash
-				  exist_check=true
+					if reply.include?(now)
+					place_str=now
+					place=hash
+					exist_check=true
 				end
 			}
 			pref_cap2num.each{|now,hash|
-			  if reply.include?(now)
-				place_str2=now
-				place2=hash
-			  end
+				if reply.include?(now)
+					place_str2=now
+					place2=hash
+				end
 			}
 			if exist_check==false
 				return 5
 			end
-			
+
 			return "ERROR2" if place==nil
-			
+
 			case weather_type
 				when 1#今日
 					xml_doc=get_xml("pref_#{place}")
@@ -128,8 +128,8 @@ module BotFuncs
 						node2 << node.text if array > 1
 						array+=1
 					}
-					
-				  	strs << node2[0].to_s + node2[1].to_s << node2[2].to_s + node2[3].to_s << node2[4].to_s + node2[5].to_s << node2[6].to_s + node2[7].to_s << node2[8].to_s + node2[9].to_s << node2[10].to_s + node2[11].to_s << node2[12].to_s + node2[13].to_s << node2[14].to_s + node2[15].to_s << node2[16].to_s + node2[17].to_s << node2[18].to_s + node2[19].to_s << node2[20].to_s + node2[21].to_s << node2[22].to_s + node2[23].to_s
+
+					strs << node2[0].to_s + node2[1].to_s << node2[2].to_s + node2[3].to_s << node2[4].to_s + node2[5].to_s << node2[6].to_s + node2[7].to_s << node2[8].to_s + node2[9].to_s << node2[10].to_s + node2[11].to_s << node2[12].to_s + node2[13].to_s << node2[14].to_s + node2[15].to_s << node2[16].to_s + node2[17].to_s << node2[18].to_s + node2[19].to_s << node2[20].to_s + node2[21].to_s << node2[22].to_s + node2[23].to_s
 
 					array_tmp=[]
 					array=0
@@ -157,13 +157,13 @@ module BotFuncs
 	end#End of class
 	
 	class BotOmikuji
-	  def parse_reply(reply)
-		if reply.empty? || reply =~ /おみくじ/
-		  return "ERROR"
+		def parse_reply(reply)
+			if reply.empty? || reply =~ /おみくじ/
+				return "ERROR"
+			end
+			if reply =~ /バトルドーム/
+				return
+			end
 		end
-		if reply =~ /バトルドーム/
-		  return
-		end
-	  end
 	end#End of class
 end#End of module

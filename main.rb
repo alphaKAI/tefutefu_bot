@@ -23,9 +23,9 @@ class MainLoop
 	def initialize
 		File.open("#{$CDIR}/csv/blacklist.csv", "w", :encoding => Encoding::UTF_8).close() unless File.exist?("./csv/blacklist.csv")
 
-		File.open("#{$CDIR}/csv/blacklist.csv", "r", :encoding => Encoding::UTF_8) do |io|
+		File.open("#{$CDIR}/csv/blacklist.csv", "r", :encoding => Encoding::UTF_8){|io|
 			@blacklist = io.read.strip.split(",")
-		end
+		}
 
 		cunsmer_array=[]
 		cunsmer_array << CONSUMER_KEY << CONSUMER_SECRET << ACCESS_TOKEN << ACCESS_TOKEN_SECRET
@@ -38,25 +38,25 @@ class MainLoop
 		bot.oauth
 		id_list=bot.get_follower#get list
 		bot.on_post
-		bot_back=0
-		
+		bot_back=nil
+
 		#起動から30秒後にツイート
 		Thread.new{
 			sleep 30
 			#ツイート
 			bot.build_post
 		}
-		
-		loop do
-			puts "==== connecting..."			
+
+		loop{
+			puts "==== connecting..."
 			begin
-				@TwitRuby.user_stream do |j|
+				@TwitRuby.user_stream{|j|
 					#follow　back?
 					if j["event"] == "follow"
 						bot.follow_back(j["source"]["screen_name"],j["source"]["name"])
 						id_list << j["user"]["screen_name"].to_s#絡むfollower追加
 					end
-					
+
 
 					if(j["text"])
 						puts "@#{j["user"]["screen_name"]}:#{j["text"]}"
@@ -65,12 +65,12 @@ class MainLoop
 						alpha_handler.bls = @blacklist
 						alpha_handler.output
 						puts "=> #{alpha_handler.filtered}" if $DEBUG_
-							
+
 						#reply
 						if j["retweeted_status"].to_s.empty?#リツイートに反応しないようにした
 							bot_back=bot.reply_post(j["text"], j["id_str"], j["user"]["screen_name"], j["user"]["id"],id_list,j["user"]["name"])
 						end
-						
+
 						case bot_back
 							when 1
 								return true
@@ -79,8 +79,8 @@ class MainLoop
 							when 0
 								next
 						end
-					end			
-				end
+					end
+				}
 			rescue Exception => e
 				puts "#### #{e} ####"
 				puts e.backtrace if $DEBUG_
@@ -88,7 +88,7 @@ class MainLoop
 			end
 
 			puts "==== connection lost."
-		end
+		}
 	end
 
 	class Tools
@@ -112,10 +112,10 @@ class MainLoop
 		end
 
 		def output
-			File.open("#{$CDIR}/output/output.txt", "a") do |io|
+			File.open("#{$CDIR}/output/output.txt", "a"){|io|
 				@filtered = filter(@text)
 				io.puts("#{@filtered}") if @filtered != ""
-			end
+			}
 		end
 
 		private

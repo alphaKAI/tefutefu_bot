@@ -14,7 +14,7 @@ class BotParser
 		elsif /@/ =~ str
 			catm=true
 		end
-		
+
 		#parse
 		case str
 			when /時刻/,/何時/
@@ -74,8 +74,7 @@ class BotParser
 				end
 			when /say/
 				if rst && ADMINS.index(id)
-					say_str=str.split(":")
-					return "管理者のα改(@#{id})より : "+say_str[1]
+					return "say"
 				end
 			when /(バトルドーム|バトルドォム).*(おみくじ)/
 				if rst
@@ -109,14 +108,14 @@ class BotParser
 				#読み込んで,区切りで読んで配列に突っ込む
 				kanjyou=File.read("#{$CDIR}/csv/kanjyou.csv", :encoding => Encoding::UTF_8).split(",")
 				return kanjyou[rand(kanjyou.size)]
-			#さいごに		
+			#さいごに
 			else
 				if rst
 					#語彙
 					words=[]
 					#読み込んで,区切りで読んで配列に突っ込む
 					words=File.read("#{$CDIR}/csv/words.csv", :encoding => Encoding::UTF_8).split(",")
-	
+
 					#イタ電
 					itaden=["結婚しろ","ﾁｯｽｗｗｗｗｗｗｗｗｗｗ","あっオカン来たから切るわ","今あなたの後ろにいるの","なんでもねぇよｗｗｗｗｗｗｗｗｗｗｗｗｗ",
 							"間違えましたｗｗｗｗｗｗｗｗ","めしなう",id.to_s+"ですか"*3,

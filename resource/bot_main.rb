@@ -32,17 +32,17 @@ include BotFuncs
 		puts "OK."
 		return id_list
 	end
-	
+
 	#てふてふ起動post
 	def on_post
 		on_str="#{BOTNAME_HN}が起動されました"+" "+"Version:"+VERSION+" "+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] }
-		@twi.update(on_str) if BOT_DEBUG==false
+		# @twi.update(on_str) if BOT_DEBUG==false
 	end
-	
+
 	#ふぉろば
 	def follow_back(target,tname)
 		me=BOTNAME_ID_NOAT
-		
+
 		if(@twi.friendships?("",target,"",me)["relationship"]["source"]["followed_by"]==true) then#フォローされ確認
 			@twi.follow(target)
 			@twi.update("@"+target.to_s+" "+tname.to_s+"さん！ フォロー返したよ！　よろしくね！"+Time.now.instance_eval { "%s.%03d" % [strftime("%Y年%m月%d日%H時%M分%S秒"), (usec / 1000.0).round] })
@@ -50,33 +50,35 @@ include BotFuncs
 		Thread.new do
 			get_follower
 		end
-	end	
-	
+	end
+
 	def build_post
 		if File.exist?("output/output.txt")
-			@tools.study(File.read("output/output.txt", :encoding => Encoding::UTF_8).split("\n"))
-			@twi.update(@tools.build_tweet)
+			Thread.new{
+				@tools.study(File.read("output/output.txt", :encoding => Encoding::UTF_8).split("\n"))
+				@twi.update(@tools.build_tweet)
+			}
 		end
 	end
 	#リプライ
 	def reply_post(sss,in_rp_id,t_id,u_id,id_list,user_name)
-	
+
 		#投稿 800読み込みにつき一回ポスト
 		if @loop_ == 800
 			build_post
 			return nil
 		end
-	
+
 		#回数削減
 		if (1..4).include?(rand(10)+1)
 			return nil
 		end
-		
+
 		unless BOTNAME_ID_NOAT==t_id && sss.include?("RT") && !(id_list.index(u_id))
 			#定義
 			post_torf=false
 			str=BotParser.new.parse(sss,t_id)
-			
+
 			case str
 				when /weather/
 					tw=BotWeather.new
@@ -121,6 +123,10 @@ include BotFuncs
 					post_torf=true
 				when /post/
 					build_post
+					return nil
+				when /say/
+					say_str=sss.split(":")
+					@twi.update("管理者のα改(@#{id})より : "+say_str[1])
 				when nil
 					return 0
 				else
@@ -128,17 +134,17 @@ include BotFuncs
 					post_torf=true
 				end
 			end
-	
+
 		#投稿
 		if post_torf
 			@twi.update("@"+t_id+" "+reply_str,in_rp_id)
 		end
-		
+
 		#ふぁぼ
 		if /#{BOTNAME_HN}/ =~ sss
 			@twi.favorite(in_rp_id)
 		end
-		
+
 		sss=""
 		reply_str=""
 		in_rp_id=""
